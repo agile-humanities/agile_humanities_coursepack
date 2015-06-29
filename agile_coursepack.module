@@ -1,0 +1,286 @@
+<?php
+
+/**
+ * @file
+ * Miscellaneous hook implementations.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function agile_coursepack_menu() {
+  return array(
+    'agile/create/coursepack' => array(
+      'file' => 'includes/agile_coursepack.form.inc',
+      'title' => 'Create Coursepack',
+      'description' => 'Creates new coursepack',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('agile_coursepack_form'),
+      'access arguments' => array('create new coursepacks'),
+      'type' => MENU_NORMAL_ITEM,
+    ),
+    'agile/coursepack/autocomplete' => array(
+      'file' => 'includes/agile_coursepack_solr.inc',
+      'title' => 'Create Coursepack',
+      'description' => 'Creates new coursepack',
+      'page callback' => 'agile_coursepack_get_coursepacks',
+      'access arguments' => array('create new coursepacks'),
+      'type' => MENU_NORMAL_ITEM,
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function agile_coursepack_theme($existing, $type, $theme, $path) {
+  return array(
+    'agile_coursepack' => array(
+      'template' => 'theme/agile_coursepack',
+      'variables' => array('islandora_object' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function agile_coursepack_permission() {
+  return array(
+    'create new coursepacks' => array(
+      'title' => t('Create New Coursepacks'),
+      'description' => t('Allows users to create anthologies'),
+    ),
+    'edit coursepacks' => array(
+      'title' => t('Create New Coursepacks'),
+      'description' => t('Allows users to create anthologies'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_required_objects().
+ */
+function agile_coursepack_islandora_required_objects(IslandoraTuque $connection) {
+  $module_path = drupal_get_path('module', 'agile_coursepack');
+  // Document Content Model.
+  $coursepack_content_model = $connection->repository->constructObject('islandora:coursepackCModel');
+  $coursepack_content_model->owner = 'fedoraAdmin';
+  $coursepack_content_model->label = 'Islandora Coursepack Content Model';
+  $coursepack_content_model->models = 'fedora-system:ContentModel-3.0';
+  // DS-COMPOSITE-MODEL Datastream.
+  $datastream = $coursepack_content_model->constructDatastream('DS-COMPOSITE-MODEL', 'X');
+  $datastream->label = 'DS-COMPOSITE-MODEL';
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromFile("$module_path/xml/islandora_coursepack_ds_composite_model.xml", FALSE);
+  $coursepack_content_model->ingestDatastream($datastream);
+  // Coursepack Collection.
+  $coursepack_collection = $connection->repository->constructObject('islandora:coursepacks');
+  $coursepack_collection->owner = 'fedoraAdmin';
+  $coursepack_collection->label = 'Coursepacks';
+  $coursepack_collection->models = 'islandora:collectionCModel';
+  $coursepack_collection->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', 'islandora:root');
+  // Collection Policy Datastream.
+  $datastream = $coursepack_collection->constructDatastream('COLLECTION_POLICY', 'X');
+  $datastream->label = 'Collection policy';
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromFile("$module_path/xml/agile_coursepack_collection_policy.xml", FALSE);
+  $coursepack_collection->ingestDatastream($datastream);
+  // TN Datastream.
+  $datastream = $coursepack_collection->constructDatastream('TN', 'M');
+  $datastream->label = 'Thumbnail';
+  $datastream->mimetype = 'image/png';
+  $datastream->setContentFromFile("$module_path/images/folder.png", FALSE);
+  $coursepack_collection->ingestDatastream($datastream);
+  return array(
+    'agile_coursepack' => array(
+      'title' => 'Agile Coursepack',
+      'objects' => array(
+        $coursepack_collection,
+        $coursepack_content_model,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_xml_form_builder_forms().
+ */
+function agile_coursepack_islandora_xml_form_builder_forms() {
+  $module_path = drupal_get_path('module', 'agile_coursepack');
+  return array(
+    'Coursepack MODS form' => array(
+      'form_file' => "$module_path/xml/agile_coursepack_form.xml",
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_content_model_forms_form_associations().
+ */
+function agile_coursepack_islandora_content_model_forms_form_associations() {
+  return array(
+    'agile_coursepack_mods_form' => array(
+      'content_model' => 'islandora:coursepackCModel',
+      'form_name' => 'Coursepack MODS form',
+      'dsid' => 'MODS',
+      'title_field' => array('titleInfo', 'title'),
+      'transform' => 'mods_to_dc.xsl',
+      'template' => FALSE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_cmodel_islandora_view_object().
+ */
+function agile_coursepack_islandora_coursepackCModel_islandora_view_object($object) {
+  if (!$object['OBJ']) {
+    return t('No description available');
+  }
+  $output = theme('islandora_document', array('islandora_object' => $object));
+  return array('' => $output);
+}
+
+/**
+ * Implements hook_islandora_ingest_steps().
+ */
+function agile_coursepack_islandora_coursepackCModel_islandora_ingest_steps() {
+  return array(
+    'agile_coursepack_file_upload' => array(
+      'weight' => -50,
+      'type' => 'form',
+      'form_id' => 'agile_coursepack_document_upload_form',
+      'module' => 'agile_coursepack',
+      'file' => 'includes/agile_coursepack.form.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_CMODEL_PID_islandora_derivative().
+ */
+function agile_coursepack_islandora_coursepackCModel_islandora_derivative() {
+  module_load_include('module', 'islandora_document');
+  return islandora_document_islandora_sp_document_islandora_derivative();
+}
+
+/**
+ * Implements hook_islandora_solr_primary_display().
+ */
+function agile_coursepack_islandora_solr_primary_display() {
+  return array(
+    'coursepack' => array(
+      'name' => t('Add Selected Results to Coursepack'),
+      'module' => 'agile_coursepack',
+      'file' => 'includes/coursepack_results.inc',
+      'class' => "IslandoraSolrResultsCoursepack",
+      'function' => "displayResults",
+      'description' => t("Add Selected Results to Coursepack"),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function agile_coursepack_form_islandora_solr_advanced_search_form_alter(&$form, &$form_state, $form_id) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
+  $coursepack_pid = agile_coursepack_get_pid_from_url();
+  if (user_access('edit coursepacks') && $coursepack_pid) {
+    $form_state['coursepack_pid'] = $coursepack_pid;
+    $form_state['redirect'] = "islandora/object/$coursepack_pid";
+
+    $form['coursepack'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Coursepack selection?'),
+    );
+    $form['#submit'][0] = 'agile_coursepack_advanced_solr_search_form_submit';
+    drupal_goto("islandora/object/$coursepack_pid");
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function agile_coursepack_form_islandora_solr_simple_search_form_alter(&$form, &$form_state, $form_id) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
+  $coursepack_pid = agile_coursepack_get_pid_from_url();
+  if (user_access('edit coursepacks') && $coursepack_pid) {
+    $form_state['coursepack_pid'] = $coursepack_pid;
+    $form_state['redirect'] = "islandora/object/$coursepack_pid";
+    $form['coursepack'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Coursepack selection?'),
+    );
+    $form['#submit'][0] = 'agile_coursepack_solr_search_form_submit';
+  }
+}
+
+/**
+ * Islandora Solr simple search form submit callback.
+ *
+ * @param array $form
+ *   An associative array containing form structure.
+ * @param array $form_state
+ *   An associative array containing form state.
+ */
+function agile_coursepack_solr_search_form_submit($form, &$form_state) {
+  $search_string = str_replace('/', '~slsh~', $form_state['values']['islandora_simple_search_query']);
+  $options = array('query' => array('type' => 'dismax'));
+  if ($form_state['values']['coursepack']) {
+    $options['query']['display'] = 'coursepack';
+    $options['query']['pid'] = $form_state['coursepack_pid'];
+  }
+  drupal_goto('islandora/search/' . $search_string, $options);
+}
+
+/**
+ * Islandora Solr simple search form submit callback.
+ *
+ * @param array $form
+ *   An associative array containing form structure.
+ * @param array $form_state
+ *   An associative array containing form state.
+ */
+function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) {
+  // Collect query values.
+  $query_array = array();
+  foreach ($form_state['values']['terms'] as $term) {
+    $field = $term['field'];
+    $search = trim($term['search']);
+    // XXX: Should probably use islandora_solr_replace_slashes().
+    $search = str_replace('/', '~slsh~', $search);
+    $boolean = (isset($term['boolean'])) ? $term['boolean'] : variable_get('islandora_solr_search_boolean', 'user');
+
+    // Add query.
+    if (!empty($search)) {
+      $query_array[] = array(
+        'search' => "$field:($search)",
+        'boolean' => $boolean,
+      );
+    }
+  }
+  // Create query.
+  $query = '';
+  $i = 0;
+  foreach ($query_array as $term) {
+    $query .= $term['search'];
+    if (count($query_array) - 1 != $i) {
+      $query .= ' ' . $term['boolean'] . ' ';
+    }
+    $i++;
+  }
+
+  // Check if query is empty.
+  if (empty($query)) {
+    $query = '*:*';
+  }
+  $options = array();
+  if ($form_state['values']['coursepack']) {
+    $options['query']['display'] = 'coursepack';
+    $options['query']['pid'] = $form_state['coursepack_pid'];
+  }
+  // Navigate to results page.
+  drupal_goto('islandora/search/' . $query, $options);
+}

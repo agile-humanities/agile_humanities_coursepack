@@ -1,0 +1,8 @@
+name = Agile Coursepack
+description = Build anthologies for courses
+dependencies[] = islandora
+dependencies[] = islandora_solr
+dependencies[] = islandora_document
+dependencies[] = islandora_compund_object
+package = Agile Humanities
+core = 7.x
