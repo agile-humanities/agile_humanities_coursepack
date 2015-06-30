@@ -6,31 +6,6 @@
  */
 
 /**
- * Implements hook_menu().
- */
-function agile_coursepack_menu() {
-  return array(
-    'agile/create/coursepack' => array(
-      'file' => 'includes/agile_coursepack.form.inc',
-      'title' => 'Create Coursepack',
-      'description' => 'Creates new coursepack',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('agile_coursepack_form'),
-      'access arguments' => array('create new coursepacks'),
-      'type' => MENU_NORMAL_ITEM,
-    ),
-    'agile/coursepack/autocomplete' => array(
-      'file' => 'includes/agile_coursepack_solr.inc',
-      'title' => 'Create Coursepack',
-      'description' => 'Creates new coursepack',
-      'page callback' => 'agile_coursepack_get_coursepacks',
-      'access arguments' => array('create new coursepacks'),
-      'type' => MENU_NORMAL_ITEM,
-    ),
-  );
-}
-
-/**
  * Implements hook_theme().
  */
 function agile_coursepack_theme($existing, $type, $theme, $path) {
@@ -196,7 +171,6 @@ function agile_coursepack_form_islandora_solr_advanced_search_form_alter(&$form,
       '#title' => t('Coursepack selection?'),
     );
     $form['#submit'][0] = 'agile_coursepack_advanced_solr_search_form_submit';
-    drupal_goto("islandora/object/$coursepack_pid");
   }
 }
 
