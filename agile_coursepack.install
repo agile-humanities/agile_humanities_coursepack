@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Hooks for installing/unintstalling this module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @see islandora_video_islandora_required_objects()
+ */
+function agile_coursepack_install() {
+  module_load_include('inc', 'islandora', 'includes/solution_packs');
+  islandora_install_solution_pack('agile_coursepack');
+}

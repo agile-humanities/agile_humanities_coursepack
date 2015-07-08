@@ -82,7 +82,7 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
    */
   protected function getTableHeader() {
     return array(
-      'markup' => t('Course Label'),
+      'markup' => t('Object Label'),
     );
   }
 
@@ -104,7 +104,8 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
       $markup = $doc[$solr_field];
     }
     else {
-      $markup = $object_result['PID'];
+      $object = islandora_object_load($object_result['PID']);
+      $markup = $object->label;
     }
 
     $object_url_info = array(
@@ -242,10 +243,20 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
    */
   protected function coursepackAdd($pids, &$form_state) {
     $objects = $this->getSelected($form_state);
+    $objects_to_add = array();
     $identifier = $form_state['values']['coursepack_identifier'];
-    $pids = $form_state['values']['coursepack_identifier'];
-    module_load_include('inc', 'islandora_compound_object', 'includes/manage.form');
-    islandora_compound_object_add_parent($objects, $identifier);
+    $current_components = islandora_compound_object_get_parts($identifier);
+    foreach ($objects as $object) {
+      if (!in_array($object->id, $current_objects)) {
+        $objects_to_add[] = $object;
+      }
+    }
+    if ($objects_to_add) {
+      $pids = $form_state['values']['coursepack_identifier'];
+      module_load_include('inc', 'islandora_compound_object', 'includes/manage.form');
+      islandora_compound_object_add_parent($objects, $identifier);
+    }
+    drupal_goto("islandora/object/$identifier");
   }
 
   /**
@@ -292,8 +303,8 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
 
     // Helper anonymous function... Just get the PID.
     $get_pid = function($result) {
-      return $result['PID'];
-    };
+          return $result['PID'];
+        };
 
     $qp = $this->islandoraSolrQueryProcessor;
     $old_params = $qp->solrParams;
