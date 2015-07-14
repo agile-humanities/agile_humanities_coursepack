@@ -12,6 +12,7 @@ function agile_coursepack_theme($existing, $type, $theme, $path) {
   return array(
     'agile_coursepack' => array(
       'template' => 'theme/agile_coursepack',
+      'file' => 'theme/theme.inc',
       'variables' => array('islandora_object' => NULL),
     ),
   );
@@ -54,9 +55,9 @@ function agile_coursepack_islandora_xml_form_builder_forms() {
 }
 
 /**
- * Implements hook_islandora_content_model_forms_form_associations().
+ * Implements hook_islandora_xml_form_builder_form_associations().
  */
-function agile_coursepack_islandora_content_model_forms_form_associations() {
+function agile_coursepack_islandora_xml_form_builder_form_associations() {
   return array(
     'agile_coursepack_mods_form' => array(
       'content_model' => 'islandora:coursepackCModel',
@@ -76,7 +77,7 @@ function agile_coursepack_islandora_coursepackCModel_islandora_view_object($obje
   if (!$object['OBJ']) {
     return t('No description available');
   }
-  $output = theme('islandora_document', array('islandora_object' => $object));
+  $output = theme('agile_coursepack', array('islandora_object' => $object));
   return array('' => $output);
 }
 
@@ -140,7 +141,7 @@ function agile_coursepack_form_islandora_solr_advanced_search_form_alter(&$form,
 /**
  * Implements hook_form_alter().
  */
-function agile_coursepack_form_islandora_solr_simple_search_form_alter(&$form, &$form_state, $form_id) {
+function agile_coursepack_form_islandora_solr_simple_search_form_alter_x(&$form, &$form_state, $form_id) {
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $coursepack_pid = agile_coursepack_get_pid_from_url();
   if (user_access('edit coursepacks') && $coursepack_pid) {
@@ -181,16 +182,16 @@ function agile_coursepack_solr_search_form_submit($form, &$form_state) {
  *   An associative array containing form state.
  */
 function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) {
-  // Collect query values.
+// Collect query values.
   $query_array = array();
   foreach ($form_state['values']['terms'] as $term) {
     $field = $term['field'];
     $search = trim($term['search']);
-    // XXX: Should probably use islandora_solr_replace_slashes().
+// XXX: Should probably use islandora_solr_replace_slashes().
     $search = str_replace('/', '~slsh~', $search);
     $boolean = (isset($term['boolean'])) ? $term['boolean'] : variable_get('islandora_solr_search_boolean', 'user');
 
-    // Add query.
+// Add query.
     if (!empty($search)) {
       $query_array[] = array(
         'search' => "$field:($search)",
@@ -198,7 +199,7 @@ function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) 
       );
     }
   }
-  // Create query.
+// Create query.
   $query = '';
   $i = 0;
   foreach ($query_array as $term) {
@@ -209,7 +210,7 @@ function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) 
     $i++;
   }
 
-  // Check if query is empty.
+// Check if query is empty.
   if (empty($query)) {
     $query = '*:*';
   }
@@ -218,6 +219,46 @@ function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) 
     $options['query']['display'] = 'coursepack';
     $options['query']['pid'] = $form_state['coursepack_pid'];
   }
-  // Navigate to results page.
+// Navigate to results page.
   drupal_goto('islandora/search/' . $query, $options);
+}
+
+/**
+ * Implements hook_block_view_alter().
+ */
+function agile_coursepack_block_view_alter_x(&$data, $block) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
+  $coursepack_pid = agile_coursepack_get_pid_from_url();
+  if ($coursepack_pid && isset($data['subject']) && $data['subject'] == 'Islandora simple search') {
+    $object = islandora_object_load($coursepack_pid);
+    $data['subject'] = t("Add digital assets to @label", array('@label' => $object->label));
+    $block->visibility = TRUE;
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function agile_coursepack_block_info() {
+  $blocks['coursepack_solr'] = array(
+    'info' => t('Solr Builder for Coursepacks'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function agile_coursepack_block_view($delta = '') {
+  module_load_include('inc', 'agile_coursepack', 'includes/solr_forms');
+  $has_content = FALSE;
+  switch ($delta) {
+    case 'coursepack_solr':
+      $block['content'] = drupal_get_form('agile_coursepack_search_form');
+      break;
+  }
+
+  return $block;
 }

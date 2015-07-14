@@ -6,5 +6,9 @@
 ?>
 
 <div>
-  <p>The output will go here, eventually</p>
+  <?php print $search_block; ?>
+  <?php print $metadata_link; ?>
+  <br />
+  <?php print $manage_link; ?>
+  <?php print $document; ?>
 </div>

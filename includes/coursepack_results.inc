@@ -82,7 +82,7 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
    */
   protected function getTableHeader() {
     return array(
-      'markup' => t('Object Label'),
+      'markup' => t("Object's Label"),
     );
   }
 
@@ -242,12 +242,15 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
    *   The array of form state.
    */
   protected function coursepackAdd($pids, &$form_state) {
-    $objects = $this->getSelected($form_state);
+    $objects = array();
+    foreach($pids as $pid) {
+      $objects[] = islandora_object_load($pid);
+    }
     $objects_to_add = array();
     $identifier = $form_state['values']['coursepack_identifier'];
     $current_components = islandora_compound_object_get_parts($identifier);
     foreach ($objects as $object) {
-      if (!in_array($object->id, $current_objects)) {
+      if (!in_array($object->id, $current_components)) {
         $objects_to_add[] = $object;
       }
     }

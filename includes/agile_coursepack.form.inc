@@ -24,7 +24,7 @@ function agile_coursepack_document_upload_form(array $form, array &$form_state) 
   $pdf['from'][] = 'pdf';
   $extensions = array(implode(' ', $pdf['from']));
   $form = array();
-  $form['file'] = array(
+  $form['intro_file'] = array(
     '#title' => t('Course Introduction'),
     '#type' => 'managed_file',
     '#required' => FALSE,
@@ -58,7 +58,7 @@ function agile_coursepack_document_upload_form_submit(array $form, array &$form_
   else {
     $ds = $object['OBJ'];
   }
-  $file = file_load($form_state['values']['file']);
+  $file = file_load($form_state['values']['intro_file']);
   if (!$file) {
     return;
   }
@@ -81,4 +81,5 @@ function agile_coursepack_document_upload_form_submit(array $form, array &$form_
     $ds->label = $text_file->filename;
     $ds->mimetype = $text_file->filemime;
   }
+
 }
