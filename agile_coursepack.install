@@ -13,4 +13,25 @@
 function agile_coursepack_install() {
   module_load_include('inc', 'islandora', 'includes/solution_packs');
   islandora_install_solution_pack('agile_coursepack');
+  $about_id = agile_coursepack_create_page_node();
+  variable_set('agile_coursepack_about_node_id', $about_id);
 }
+
+function agile_coursepack_create_page_node() {
+  $splash_about = 'Welcome to the coursepack module';
+  $values = array(
+    'type' => 'page',
+    'uid' => $GLOBALS['user']->uid,
+    'status' => 0,
+    'comment' => 1,
+    'promote' => 0,
+  );
+  $entity = entity_create('node', $values);
+  $wrapper = entity_metadata_wrapper('node', $entity);
+  $wrapper->title->set('Agile Coursepack About Page');
+  $wrapper->body->set(array('value' => "<strong>Welcome to the coursepack landing page.</strong>"));
+  $wrapper->save(true);
+  entity_save('node', $entity);
+  return $wrapper->getIdentifier();
+}
+

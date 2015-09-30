@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Creates solr retreival forms.
+ * Creates solr retrieval forms.
  */
 
 /**

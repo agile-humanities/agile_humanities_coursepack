@@ -4,5 +4,7 @@ dependencies[] = islandora
 dependencies[] = islandora_solr
 dependencies[] = islandora_document
 dependencies[] = islandora_compound_object
+dependencies[] = entity
+
 package = Agile Humanities
 core = 7.x

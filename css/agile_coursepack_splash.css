@@ -1,0 +1,14 @@
+
+#splash_button_about{
+    width: 74%;
+    float: left;
+    text-decoration-color: red;
+}
+#splash_button_id{
+    width: 20%;
+    float: right; 
+}
+.agile-coursepack-splash-button{
+    width:99%;
+    padding-bottom: 8px;
+}

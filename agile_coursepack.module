@@ -6,6 +6,31 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function agile_coursepack_menu() {
+  $items = array();
+  $items['agile/coursepack/splash'] = array(
+    'description' => 'Coursepack landing page',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('agile_coursepack_splash'),
+    'file' => 'includes/coursepack_splash.inc',
+    'access arguments' => array('access content'),
+  );
+     $items['admin/islandora/solution_pack_config/coursepack'] = array(
+      'title' => 'Coursepack Configuration',
+      'description' => 'Configure the coursepck module.',
+      'page callback' => 'drupal_get_form',
+      'access arguments' => array('administer site configuration'),
+      'page arguments' => array('agile_coursepack_admin_settings_form'),
+      'file' => 'includes/admin.form.inc',
+      'type' => MENU_NORMAL_ITEM,
+    );
+  return $items;
+}
+
+/**
  * Implements hook_theme().
  */
 function agile_coursepack_theme($existing, $type, $theme, $path) {
