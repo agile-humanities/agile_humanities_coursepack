@@ -12,15 +12,23 @@
  *   The drupal form definition.
  */
 function agile_coursepack_splash(array $form, array &$form_state) {
+  if (isset($form_state['triggering_element'])) {
+    if ($form_state['triggering_element']['#id'] == 'agile-coursepack-add') {
+      drupal_goto('agile_coursepack/add_item');
+    }
+    if ($form_state['triggering_element']['#id'] == 'agile-coursepack-browse') {
+      drupal_goto('agile_coursepack/browse');
+    }
+  }
   $module_path = drupal_get_path('module', 'agile_coursepack');
   drupal_add_css("$module_path/css/agile_coursepack_splash.css");
   $about_id = variable_get('agile_coursepack_about_node_id', FALSE);
   $about_node = node_load($about_id);
-  if ($about_node){
-      $body = field_get_items('node', $about_node, 'body');
-      $body_value = $body[0]['value'];
+  if ($about_node) {
+    $body = field_get_items('node', $about_node, 'body');
+    $body_value = $body[0]['value'];
   }
-  else{
+  else {
     $body_value = t("<strong>@body</strong>", array('@body' => 'Welcome to the coursepack landing page.'));
   }
 
@@ -31,10 +39,18 @@ function agile_coursepack_splash(array $form, array &$form_state) {
     ),
   );
   $form['about_container']['about'] = array(
-  '#attributes' => array('class' => array('agile-coursepack-about')),
-  '#markup' => $body_value,
+    '#attributes' => array('class' => array('agile-coursepack-about')),
+    '#markup' => $body_value,
   );
 
+  $buttons = agile_coursepack_buttons();
+  $form = array_merge($form, $buttons);
+
+  return $form;
+}
+
+function agile_coursepack_buttons() {
+  $form = array();
   $form['buttons'] = array(
     '#type' => 'container',
     '#attributes' => array(
@@ -62,6 +78,5 @@ function agile_coursepack_splash(array $form, array &$form_state) {
     '#attributes' => array('class' => array('agile-coursepack-splash-button')),
     '#id' => 'agile-coursepack-add',
   );
-
   return $form;
 }

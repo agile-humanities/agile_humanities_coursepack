@@ -18,15 +18,31 @@ function agile_coursepack_menu() {
     'file' => 'includes/coursepack_splash.inc',
     'access arguments' => array('access content'),
   );
-     $items['admin/islandora/solution_pack_config/coursepack'] = array(
-      'title' => 'Coursepack Configuration',
-      'description' => 'Configure the coursepck module.',
-      'page callback' => 'drupal_get_form',
-      'access arguments' => array('administer site configuration'),
-      'page arguments' => array('agile_coursepack_admin_settings_form'),
-      'file' => 'includes/admin.form.inc',
-      'type' => MENU_NORMAL_ITEM,
-    );
+  $items['admin/islandora/solution_pack_config/coursepack'] = array(
+    'title' => 'Coursepack Configuration',
+    'description' => 'Configure the coursepck module.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('administer site configuration'),
+    'page arguments' => array('agile_coursepack_admin_settings_form'),
+    'file' => 'includes/admin.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['agile_coursepack/add_item'] = array(
+    'title' => 'Add item',
+    'description' => 'Add digital asset to repository.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('administer site configuration'),
+    'page arguments' => array('agile_coursepack_add_item_form'),
+    'file' => 'includes/add_item.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['agile_coursepack/browse'] = array(
+    'description' => 'Coursepack browsing page',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'agile_coursepack_browse',
+    'file' => 'includes/agile_coursepack_browse.inc',
+    'access arguments' => array('access content'),
+  );
   return $items;
 }
 
@@ -141,6 +157,14 @@ function agile_coursepack_islandora_solr_primary_display() {
       'class' => "IslandoraSolrResultsCoursepack",
       'function' => "displayResults",
       'description' => t("Add Selected Results to Coursepack"),
+    ),
+    'coursepack_default_display' => array(
+      'name' => t('Coursepack Solr Results'),
+      'module' => 'agile_coursepack',
+      'file' => 'includes/coursepack_solr_display.inc',
+      'class' => "IslandoraSolrResultsCoursepackDisplay",
+      'function' => "displayResults",
+      'description' => t("Default Coursepack Display"),
     ),
   );
 }

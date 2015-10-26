@@ -9,7 +9,7 @@
 /**
  * Extention of IslandoraSolrResults to create an alternative display type.
  */
-class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
+class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
 
   /**
    * Constructor.
@@ -18,26 +18,7 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
     parent::__construct();
   }
 
-  /**
-   * Renders the Solr results as a table.
-   *
-   * @see displayResults()
-   *
-   * @param array $results
-   *   The raw Solr results from IslandoraSolrQueryProcessor::solrResult
-   *
-   * @return array
-   *   Rendered Solr results
-   */
-  public function printResults($results) {
-    drupal_add_css(drupal_get_path('module', 'islandora_solr_config') . '/css/islandora_solr_config.theme.css');
 
-    if (empty($results)) {
-      return t('No results');
-    }
-    $results_form = drupal_get_form('islandora_collection_builder_results_form', $this, $results['response']['objects']);
-    return drupal_render($results_form);
-  }
 
   /**
    * Form building method.
@@ -80,7 +61,7 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResults {
    * @return array
    *   An associative array as used as headers by theme_tableselect()/
    */
-  protected function getTableHeader() {
+  protected function getTableHeader_x() {
     return array(
       'markup' => t("Object's Label"),
     );
