@@ -115,6 +115,13 @@ function agile_coursepack_add_item_form_submit(array $form, array &$form_state) 
     'large_image' => 'islandora:sp_large_image_cmodel',
     'pdf' => 'islandora:sp_document',
   );
+  $collection_mappings = array(
+    'video' => 'islandora:video_collection',
+    'audio' => 'islandora:audio_collection',
+    'image' => 'islandora:sp_basic_image_collection',
+    'large_image' => 'islandora:sp_large_image_collection',
+    'pdf' => 'islandora:sp_document_collection',
+  );
   $tuque = new IslandoraTuque();
   $namespace = variable_get('agile_coursepack_object_namespace', 'islandora');
   $object = $tuque->repository->constructObject($namespace);
@@ -139,6 +146,8 @@ function agile_coursepack_add_item_form_submit(array $form, array &$form_state) 
   foreach ($mappings as $type => $extension_array) {
     if (in_array($extension, $extension_array)) {
       $object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $content_model_mappings[$type]);
+      $object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOf', $collection_mappings[$type]);
+
       break;
     }
   }
