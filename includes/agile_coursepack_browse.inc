@@ -3,6 +3,8 @@
 function agile_coursepack_browse() {
   module_load_include('inc', 'islandora_solr', 'includes/block');
   module_load_include('inc', 'agile_coursepack', 'includes/coursepack_splash');
+  $module_path = drupal_get_path('module', 'agile_coursepack');
+  drupal_add_css("$module_path/css/agile_coursepack_splash.css");
   $block = module_invoke('islandora_solr', 'block_view', 'simple');
   $content = render($block['content']);
   $path_parts = explode('/', $_GET['q']);
@@ -11,7 +13,7 @@ function agile_coursepack_browse() {
     $query = $path_parts[2];
   }
   $content .= islandora_solr($query);
-  
+
   $buttons = agile_coursepack_buttons();
   $content = drupal_render($buttons) . $content;
   return $content;
