@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Courespack's add item form.
+ * Coursepack's add item form.
  *
  * @param array $form
  *   Drupal Form
@@ -12,6 +12,7 @@
  *   The drupal form definition.
  */
 function agile_coursepack_add_item_form(array $form, array &$form_state) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $module_path = drupal_get_path('module', 'agile_coursepack');
 
   $form['author_first'] = array(
@@ -107,6 +108,7 @@ function agile_coursepack_add_item_form(array $form, array &$form_state) {
  *   The drupal form state.
  */
 function agile_coursepack_add_item_form_submit(array $form, array &$form_state) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $mappings = coursepack_get_extensions();
   $content_model_mappings = array(
     'video' => 'islandora:sp_videoCModel',
@@ -274,26 +276,4 @@ function add_language($xml, $language) {
   $languageTerm_node->setAttribute('authority', 'iso639-2b');
   $languageTerm_node->setAttribute('type', 'code');
   $language_node->appendChild($languageTerm_node);
-}
-
-/**
- * Gets all allowable extgensions.
- *
- * @return arrat
- */
-function coursepack_get_extensions() {
-  $audio_extensions = array('wav', 'mp3');
-  $large_image_extensions = array('tif', 'tiff');
-  $image_extensions = array('jpg', 'jpeg', 'gif', 'png');
-  $video_extensions = array('ogg', 'mp4', 'mov', 'qt', 'm4v', 'avi', 'mkv');
-  module_load_include('inc', 'islandora_jodconverter', 'includes/utilities');
-  $pdf = islandora_jodconverter_get_format('pdf');
-  $pdf['from'][] = 'pdf';
-  return array(
-    'audio' => $audio_extensions,
-    'video' => $video_extensions,
-    'pdf' => $pdf['from'],
-    'large_image' => $large_image_extensions,
-    'image' => $image_extensions,
-  );
 }

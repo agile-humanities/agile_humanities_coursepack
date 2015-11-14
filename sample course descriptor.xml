@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coursepack xmlns:h="http://www.w3.org/coursepack">
+    <name></name>
+    <number></number>
+    <date></date>
+    <year></year>
+    <term></term>
+    <instructorfirst></instructorfirst>
+    <instructorlast></instructorlast>
+    <instructortitle></instructortitle>
+    <department></department>
+    <institution></institution>
+</coursepack>
+    

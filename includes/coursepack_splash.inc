@@ -19,6 +19,10 @@ function agile_coursepack_splash(array $form, array &$form_state) {
     if ($form_state['triggering_element']['#id'] == 'agile-coursepack-browse') {
       drupal_goto('agile_coursepack/browse');
     }
+    if ($form_state['triggering_element']['#id'] == 'agile-coursepack-create') {
+      drupal_goto('agile_coursepack/add_coursepack');
+    }
+    
   }
   $module_path = drupal_get_path('module', 'agile_coursepack');
   drupal_add_css("$module_path/css/agile_coursepack_splash.css");

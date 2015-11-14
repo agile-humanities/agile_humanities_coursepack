@@ -34,3 +34,26 @@ function agile_coursepack_get_pid_from_url() {
 
   return $is_coursepack ? $object->id : FALSE;
 }
+
+/**
+ * Gets all allowable extensions.
+ *
+ * @return array
+ *   Allowable extensions
+ */
+function coursepack_get_extensions() {
+  $audio_extensions = array('wav', 'mp3');
+  $large_image_extensions = array('tif', 'tiff');
+  $image_extensions = array('jpg', 'jpeg', 'gif', 'png');
+  $video_extensions = array('ogg', 'mp4', 'mov', 'qt', 'm4v', 'avi', 'mkv');
+  module_load_include('inc', 'islandora_jodconverter', 'includes/utilities');
+  $pdf = islandora_jodconverter_get_format('pdf');
+  $pdf['from'][] = 'pdf';
+  return array(
+    'audio' => $audio_extensions,
+    'video' => $video_extensions,
+    'pdf' => $pdf['from'],
+    'large_image' => $large_image_extensions,
+    'image' => $image_extensions,
+  );
+}

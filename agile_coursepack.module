@@ -36,6 +36,15 @@ function agile_coursepack_menu() {
     'file' => 'includes/add_item.form.inc',
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['agile_coursepack/add_coursepack'] = array(
+    'title' => 'Add coursepack',
+    'description' => 'Create coursepack.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('administer site configuration'),
+    'page arguments' => array('agile_coursepack_add_coursepack_form'),
+    'file' => 'includes/agile_create_coursepack.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
   $items['agile_coursepack/browse'] = array(
     'description' => 'Coursepack browsing page',
     'type' => MENU_NORMAL_ITEM,
@@ -43,6 +52,8 @@ function agile_coursepack_menu() {
     'file' => 'includes/agile_coursepack_browse.inc',
     'access arguments' => array('access content'),
   );
+
+  
   return $items;
 }
 
