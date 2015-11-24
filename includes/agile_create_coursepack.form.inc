@@ -23,10 +23,6 @@ function agile_coursepack_add_coursepack_form(array $form, array &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Course number'),
   );
-  $form['date'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Date'),
-  );
   $form['year'] = array(
     '#type' => 'textfield',
     '#title' => t('Year'),
@@ -55,10 +51,7 @@ function agile_coursepack_add_coursepack_form(array $form, array &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Institution'),
   );
-  $form['owner_last'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Your Last Name'),
-  );
+
   $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
   $audio_extensions = 'wav mp3';
   $video_extensions = 'ogg mp4 mov qt m4v avi mkv';
@@ -124,6 +117,7 @@ function agile_coursepack_add_coursepack_form_submit(array $form, array &$form_s
   $object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOf', 'islandora:coursepacks');
   $ingested_object = islandora_add_object($object);
   drupal_set_message(t('Ingested @label', array('@label' => $ingested_object->label)));
+  $form_state['redirect'] = "islandora/object/$ingested_object->id";
 }
 
 function agile_coursepack_make_cpdata($values) {
@@ -131,13 +125,12 @@ function agile_coursepack_make_cpdata($values) {
   $cp = new CPData();
   $cp->addElement('cp:name', $values['course_name']);
   $cp->addElement('cp:number', $values['course_number']);
-  $cp->addElement('cp:date', $values['date']);
   $cp->addElement('cp:year', $values['year']);
   $cp->addElement('cp:term', $values['term']);
   $cp->addElement('cp:intructorfirst', $values['first']);
   $cp->addElement('cp:intructorlast', $values['last']);
   $cp->addElement('cp:intructortitle', $values['honorific']);
   $cp->addElement('cp:department', $values['dept']);
-  $cp->addElement('cp:institiution', $values['institution']);
+  $cp->addElement('cp:institution', $values['institution']);
   return $cp->asXML();
 }

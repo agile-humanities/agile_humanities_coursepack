@@ -218,7 +218,6 @@ function agile_coursepack_form_islandora_solr_simple_search_form_alter(&$form, &
 function agile_coursepack_solr_search_form_submit($form, &$form_state) {
   $search_string = str_replace('/', '~slsh~', $form_state['values']['islandora_simple_search_query']);
   $filter = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_basic_imagel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:islandora:sp_document"';
-
   $options = array('query' => array('type' => 'dismax', 'fq' => $filter));
   drupal_goto('agile_coursepack/browse/' . $search_string, $options);
 }

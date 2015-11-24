@@ -48,5 +48,6 @@ function agile_coursepack_search_form_submit($form, &$form_state) {
   $options = array('query' => array('type' => 'dismax'));
   $options['query']['display'] = 'coursepack';
   $options['query']['pid'] = $form_state['coursepack_pid'];
+  //return islandora_solr($search_string);
   drupal_goto('islandora/search/' . $search_string, $options);
 }

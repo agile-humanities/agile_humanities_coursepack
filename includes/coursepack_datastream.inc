@@ -20,7 +20,7 @@ class CPData {
     'cp:intructorlast' => array(),
     'cp:intructortitle' => array(),
     'cp:department' => array(),
-    'cp:institiution' => array(),
+    'cp:institution' => array(),
   );
   public $owner;
 
