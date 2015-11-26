@@ -52,6 +52,13 @@ function agile_coursepack_menu() {
     'file' => 'includes/agile_coursepack_browse.inc',
     'access arguments' => array('access content'),
   );
+    $items['agile_coursepack/populate'] = array(
+    'description' => 'Populate coursepack',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'agile_populate_coursepack',
+    'file' => 'includes/agile_populate_coursepack.inc',
+    'access arguments' => array('access content'),
+  );
 
   
   return $items;
@@ -269,7 +276,7 @@ function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) 
     $options['query']['pid'] = $form_state['coursepack_pid'];
   }
 // Navigate to results page.
-  drupal_goto('islandora/search/' . $query, $options);
+ // drupal_goto('islandora/search/' . $query, $options);
 }
 
 /**

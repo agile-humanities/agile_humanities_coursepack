@@ -40,14 +40,32 @@ function agile_coursepack_search_form($form, &$form_state) {
 }
 
 function agile_coursepack_search_form_submit($form, &$form_state) {
+  if (!isset($_GET['hidden_filter'])) {
+    $_GET['hidden_filter'] = array('');
+  }
+  else {
+    $_GET['hidden_filter'][0] .= ' || ';
+  }
+  $content_models = array(
+    'info:fedora/islandora:sp_videoCModel',
+    'info:fedora/islandora:sp-audioCModel',
+    'info:fedora/islandora:sp_basic_image',
+    'info:fedora/islandora:sp_large_image_cmodel',
+    'info:fedora/islandora:sp_document',
+  );
+  $content_models_string = implode('" || "', $content_models);
+  $_GET['hidden_filter'][0] .= 'RELS_EXT_hasModel_uri_ms:("' . $content_models_string . '")';
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $coursepack_pid = agile_coursepack_get_pid_from_url();
   $form_state['coursepack_pid'] = $coursepack_pid;
   $form_state['redirect'] = "islandora/object/$coursepack_pid";
   $search_string = str_replace('/', '~slsh~', $form_state['values']['agile_coursepack_search_query']);
+  if (empty($search_string)) {
+    $search_string = '*:*';
+  }
   $options = array('query' => array('type' => 'dismax'));
   $options['query']['display'] = 'coursepack';
   $options['query']['pid'] = $form_state['coursepack_pid'];
-  //return islandora_solr($search_string);
+  $options['query']['hidden_filter'][0] = 'RELS_EXT_hasModel_uri_ms:("' . $content_models_string . '")';
   drupal_goto('islandora/search/' . $search_string, $options);
 }
