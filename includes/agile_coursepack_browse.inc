@@ -43,6 +43,9 @@ function agile_coursepack_button_form($form, $form_state) {
     if ($form_state['triggering_element']['#id'] == 'agile-coursepack-browse') {
       drupal_goto('agile_coursepack/browse');
     }
+    if ($form_state['triggering_element']['#id'] == 'agile-coursepack-create') {
+      drupal_goto('agile_coursepack/add_coursepack');
+    }
   }
   $form = agile_coursepack_buttons();
   return $form;
