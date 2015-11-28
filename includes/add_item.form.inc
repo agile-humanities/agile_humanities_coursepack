@@ -58,14 +58,8 @@ function agile_coursepack_add_item_form(array $form, array &$form_state) {
     '#title' => t('Manifestation'),
     '#description' => t('(periodical, book, broadside, etc.)'),
   );
-  $form['owner_first'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Your First Name'),
-  );
-  $form['owner_last'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Your Last Name'),
-  );
+
+
   $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
   $audio_extensions = 'wav mp3';
   $video_extensions = 'ogg mp4 mov qt m4v avi mkv';
@@ -144,7 +138,7 @@ function agile_coursepack_add_item_form_submit(array $form, array &$form_state) 
   $object->ingestDatastream($ds);
 
   $path_parts = pathinfo($source_file->uri);
-  $extension = $path_parts['extension'];
+  $extension = strtolower($path_parts['extension']);
   foreach ($mappings as $type => $extension_array) {
     if (in_array($extension, $extension_array)) {
       $object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $content_model_mappings[$type]);
@@ -194,7 +188,7 @@ function coursepack_build_mods($inputs) {
  *   value for authority
  */
 function add_authority($xml, $type, $name) {
-  $mods_uri = "http://www.loc.gov/mods/v2";
+  $mods_uri = "http://www.loc.gov/mods/v3";
   $root = $xml->documentElement;
   // name.
   $name_node = $xml->createElementNS($mods_uri, 'mods:name');
@@ -221,7 +215,7 @@ function add_authority($xml, $type, $name) {
  *   Title to be added
  */
 function add_title($xml, $title) {
-  $mods_uri = "http://www.loc.gov/mods/v2";
+  $mods_uri = "http://www.loc.gov/mods/v3";
   $root = $xml->documentElement;
   $titleInfo_node = $xml->createElementNS($mods_uri, "mods:titleInfo");
   $root->appendChild($titleInfo_node);
@@ -238,7 +232,7 @@ function add_title($xml, $title) {
  *   OriginInfo values to be added
  */
 function add_originInfo($xml, $values) {
-  $mods_uri = "http://www.loc.gov/mods/v2";
+  $mods_uri = "http://www.loc.gov/mods/v3";
   $root = $xml->documentElement;
   $originInfo_node = $xml->createElementNS($mods_uri, "mods:originInfo");
   $root->appendChild($originInfo_node);
@@ -268,7 +262,7 @@ function add_originInfo($xml, $values) {
  *   Language to be added
  */
 function add_language($xml, $language) {
-  $mods_uri = "http://www.loc.gov/mods/v2";
+  $mods_uri = "http://www.loc.gov/mods/v3";
   $root = $xml->documentElement;
   $language_node = $xml->createElementNS($mods_uri, "mods:language");
   $root->appendChild($language_node);
