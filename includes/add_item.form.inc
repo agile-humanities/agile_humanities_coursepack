@@ -14,7 +14,12 @@
 function agile_coursepack_add_item_form(array $form, array &$form_state) {
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $module_path = drupal_get_path('module', 'agile_coursepack');
-
+  $form['public_domain'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('This item is in the public domain'),
+    '#description' => t('All uploaded items must be in the public domain'),
+    '#required' => TRUE,
+  );
   $form['author_first'] = array(
     '#type' => 'textfield',
     '#title' => t('Creator First Name'),
@@ -24,10 +29,12 @@ function agile_coursepack_add_item_form(array $form, array &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Creator Last Name'),
     '#description' => t('Creator last name (Author, painter, etc)'),
+    '#required' => TRUE,
   );
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title of work'),
+    '#required' => TRUE,
   );
   $form['dateIssued'] = array(
     '#type' => 'date_popup',
@@ -59,7 +66,6 @@ function agile_coursepack_add_item_form(array $form, array &$form_state) {
     '#description' => t('(periodical, book, broadside, etc.)'),
   );
 
-
   $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
   $audio_extensions = 'wav mp3';
   $video_extensions = 'ogg mp4 mov qt m4v avi mkv';
@@ -76,7 +82,7 @@ function agile_coursepack_add_item_form(array $form, array &$form_state) {
   $form['source_file'] = array(
     '#title' => t('Source file'),
     '#type' => 'managed_file',
-    '#required' => FALSE,
+    '#required' => TRUE,
     '#description' => t('Select file to upload.<br/>Files must be less than <b>@size MB.</b><br/>Allowed file types: <b>@ext.</b>', array('@size' => $upload_size, '@ext' => $allowed)),
     '#default_value' => isset($form_state['values']['files']) ? $form_state['values']['files'] : NULL,
     '#upload_location' => 'temporary://',

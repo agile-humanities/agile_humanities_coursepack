@@ -15,6 +15,7 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   if (islandora_object_access_callback(ISLANDORA_METADATA_EDIT, $object)) {
     $variables['metadata_link'] = l(t("Edit metadata"), "islandora/edit_form/{$object->id}/MODS");
     $variables['manage_link'] = l(t("Manage members"), "islandora/object/{$object->id}/manage/compound");
+    $variables['consolidate_link'] = l(t("Download Coursepack PDFs"), "agile_coursepack/consolidate/{$object->id}");
   }
   $variables['document'] = theme('islandora_document', array('islandora_object' => $object));
 }

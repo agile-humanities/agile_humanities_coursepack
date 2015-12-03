@@ -61,7 +61,7 @@ function agile_coursepack_search_form_submit($form, &$form_state) {
   $form_state['redirect'] = "islandora/object/$coursepack_pid";
   $search_string = str_replace('/', '~slsh~', $form_state['values']['agile_coursepack_search_query']);
   if (empty($search_string)) {
-    $search_string = '*:*';
+    $search_string = '%20';
   }
   $options = array('query' => array('type' => 'dismax'));
   $options['query']['display'] = 'coursepack';

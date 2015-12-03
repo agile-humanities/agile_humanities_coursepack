@@ -14,6 +14,11 @@
 function agile_coursepack_add_coursepack_form(array $form, array &$form_state) {
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $module_path = drupal_get_path('module', 'agile_coursepack');
+  $form['license'] = array(
+    '#type' => 'markup',
+    '#markup' => t('All coursepacks will be created with a Creative Commons ccby license.'),
+  );
+
 
   $form['course_name'] = array(
     '#type' => 'textfield',
@@ -127,9 +132,9 @@ function agile_coursepack_make_cpdata($values) {
   $cp->addElement('cp:number', $values['course_number']);
   $cp->addElement('cp:year', $values['year']);
   $cp->addElement('cp:term', $values['term']);
-  $cp->addElement('cp:intructorfirst', $values['first']);
-  $cp->addElement('cp:intructorlast', $values['last']);
-  $cp->addElement('cp:intructortitle', $values['honorific']);
+  $cp->addElement('cp:instructorfirst', $values['first']);
+  $cp->addElement('cp:instructorlast', $values['last']);
+  $cp->addElement('cp:instructortitle', $values['honorific']);
   $cp->addElement('cp:department', $values['dept']);
   $cp->addElement('cp:institution', $values['institution']);
   return $cp->asXML();

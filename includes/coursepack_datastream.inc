@@ -16,9 +16,9 @@ class CPData {
     'cp:date' => array(),
     'cp:year' => array(),
     'cp:term' => array(),
-    'cp:intructorfirst' => array(),
-    'cp:intructorlast' => array(),
-    'cp:intructortitle' => array(),
+    'cp:instructorfirst' => array(),
+    'cp:instructorlast' => array(),
+    'cp:instructortitle' => array(),
     'cp:department' => array(),
     'cp:institution' => array(),
   );
