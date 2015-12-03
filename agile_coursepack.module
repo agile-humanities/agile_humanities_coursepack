@@ -56,16 +56,15 @@ function agile_coursepack_menu() {
     'description' => 'Populate coursepack',
     'type' => MENU_CALLBACK,
     'page callback' => 'agile_populate_coursepack',
-    'file' => 'includes/agile_populate_coursepack.inc',
+    'file' => 'includes/utilities.inc',
     'access arguments' => array('access content'),
   );
   $items['agile_coursepack/consolidate'] = array(
     'title' => 'Download Zip',
     'description' => 'Download coursepack PDFs.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'agile_coursepack_download',
     'access arguments' => array('access content'),
-    'page arguments' => array('agile_coursepack_download_form'),
-    'file' => 'includes/agile_coursepack_download.form.inc',
+    'file' => 'includes/utilities.inc',
     'type' => MENU_CALLBACK,
   );
 

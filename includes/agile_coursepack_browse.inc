@@ -1,5 +1,11 @@
 <?php
 
+
+/**
+ * Interface to allow browsing of content only.
+ *
+ * @return string
+ */
 function agile_coursepack_browse() {
   module_load_include('inc', 'islandora_solr', 'includes/block');
   module_load_include('inc', 'agile_coursepack', 'includes/coursepack_splash');
@@ -28,7 +34,6 @@ function agile_coursepack_browse() {
     $query = $path_parts[2];
   }
   $content .= islandora_solr($query);
-
   $buttons = drupal_get_form('agile_coursepack_button_form');
   $content = drupal_render($buttons) . $content;
   return $content;

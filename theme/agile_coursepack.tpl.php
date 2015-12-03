@@ -13,4 +13,5 @@
   <br />
   <?php print $consolidate_link; ?>
   <?php print $document; ?>
+  <?php print $links; ?>
 </div>

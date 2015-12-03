@@ -10,6 +10,17 @@
  */
 function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   $object = $variables['islandora_object'];
+  $children = islandora_compound_object_get_parts($object->id, TRUE);
+  foreach( $children as $pid => $values){
+    $links[] = l($values['title'],"islandora/object/$pid");
+  }
+  $list_variables = array(
+    'items' => $links,
+    'title' => t('Reading list for @coursepack', array('@coursepack' => $object->label)),
+    'type' => 'ul',
+    'attributes' => array('class' => 'coursepack_members'),
+  );
+  $variables['links'] = theme_item_list($list_variables);
   $block = module_invoke('agile_coursepack', 'block_view', 'coursepack_solr');
   $variables['search_block'] = render($block['content']);
   if (islandora_object_access_callback(ISLANDORA_METADATA_EDIT, $object)) {
