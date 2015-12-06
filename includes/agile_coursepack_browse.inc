@@ -1,9 +1,13 @@
 <?php
 
-
 /**
  * Interface to allow browsing of content only.
  *
+ * @return string
+ */
+
+/**
+ * Searches content filtered by content
  * @return string
  */
 function agile_coursepack_browse() {
@@ -14,21 +18,6 @@ function agile_coursepack_browse() {
   $block = module_invoke('islandora_solr', 'block_view', 'simple');
   $content = render($block['content']);
   $path_parts = explode('/', $_GET['q']);
-  if (!isset($_GET['hidden_filter'])) {
-    $_GET['hidden_filter'] = array('');
-  }
-  else {
-    $_GET['hidden_filter'][0] .= ' || ';
-  }
-  $content_models = array(
-    'info:fedora/islandora:sp_videoCModel',
-    'info:fedora/islandora:sp-audioCModel',
-    'info:fedora/islandora:sp_basic_image',
-    'info:fedora/islandora:sp_large_image_cmodel',
-    'info:fedora/islandora:sp_document',
-  );
-  $content_models_string = implode('" || "', $content_models);
-  $_GET['hidden_filter'][0] .= 'RELS_EXT_hasModel_uri_ms:("' . $content_models_string . '")';
   $query = '%20';
   if (isset($path_parts[2])) {
     $query = $path_parts[2];
@@ -51,7 +40,28 @@ function agile_coursepack_button_form($form, $form_state) {
     if ($form_state['triggering_element']['#id'] == 'agile-coursepack-create') {
       drupal_goto('agile_coursepack/add_coursepack');
     }
+    if ($form_state['triggering_element']['#id'] == 'agile-coursepack-coursepacks') {
+      drupal_goto('agile_coursepack/coursepacks');
+    }
   }
   $form = agile_coursepack_buttons();
   return $form;
+}
+
+/**
+ * Searches content filtered by content
+ * @return string
+ */
+function agile_coursepack_coursepack_browse() {
+  module_load_include('inc', 'islandora_solr', 'includes/block');
+  module_load_include('inc', 'agile_coursepack', 'includes/coursepack_splash');
+  $block = module_invoke('islandora_solr', 'block_view', 'advanced');
+  $content = render($block['content']);
+  $path_parts = explode('/', $_GET['q']);
+  $query = '%2A%3A%2A';
+  if (isset($path_parts[2])) {
+    $query = $path_parts[2];
+  }
+  $content .= islandora_solr($query);
+  return $content;
 }

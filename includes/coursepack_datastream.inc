@@ -51,7 +51,7 @@ class CPData {
   }
 
   /**
-   * Replace the given Courespack element with the given values.
+   * Replace the given Coursepack element with the given values.
    *
    * @param string $element_name
    *   The name of the elements to set.
@@ -149,7 +149,7 @@ class CPData {
   public static function importFromXMLString($cp_xml) {
     $cp_doc = new DomDocument();
     if (!empty($cp_xml) && $cp_doc->loadXML($cp_xml)) {
-      $cp_root = $cp_doc->getElementsByTagNameNS('http://agilehumanities.ca/ca', '*');
+      $cp_root = $cp_doc->getElementsByTagNameNS('http://agilehumanities.ca/cp', '*');
       $new_cp = new CPData();
       foreach ($cp_root as $child) {
         if (isset($new_cp->cp[$child->nodeName])) {

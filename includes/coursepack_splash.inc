@@ -22,7 +22,9 @@ function agile_coursepack_splash(array $form, array &$form_state) {
     if ($form_state['triggering_element']['#id'] == 'agile-coursepack-create') {
       drupal_goto('agile_coursepack/add_coursepack');
     }
-    
+    if ($form_state['triggering_element']['#id'] == 'agile-coursepack-coursepacks') {
+      drupal_goto('agile_coursepack/coursepacks');
+    }
   }
   $module_path = drupal_get_path('module', 'agile_coursepack');
   drupal_add_css("$module_path/css/agile_coursepack_splash.css");
@@ -64,9 +66,16 @@ function agile_coursepack_buttons() {
 
   $form['buttons']['browse'] = array(
     '#type' => 'button',
-    '#value' => t("Browse"),
+    '#value' => t("Browse content"),
     '#attributes' => array('class' => array('agile-coursepack-splash-button')),
     '#id' => 'agile-coursepack-browse',
+  );
+
+  $form['buttons']['coursespacks'] = array(
+    '#type' => 'button',
+    '#value' => t("Browse Coursepacks"),
+    '#attributes' => array('class' => array('agile-coursepack-splash-button')),
+    '#id' => 'agile-coursepack-coursepacks',
   );
 
   $form['buttons']['create'] = array(

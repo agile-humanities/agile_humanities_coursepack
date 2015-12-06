@@ -11,20 +11,27 @@
 function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   $object = $variables['islandora_object'];
   $children = islandora_compound_object_get_parts($object->id, TRUE);
-  foreach( $children as $pid => $values){
-    $links[] = l($values['title'],"islandora/object/$pid");
+  $links = array();
+  foreach ($children as $pid => $values) {
+    $links[] = l($values['title'], "islandora/object/$pid");
   }
-  $list_variables = array(
-    'items' => $links,
-    'title' => t('Reading list for @coursepack', array('@coursepack' => $object->label)),
-    'type' => 'ul',
-    'attributes' => array('class' => 'coursepack_members'),
-  );
-  $variables['links'] = theme_item_list($list_variables);
+  $list_variables = array();
+  if ($links) {
+    $list_variables = array(
+      'items' => $links,
+      'title' => t('Reading list for @coursepack', array('@coursepack' => $object->label)),
+      'type' => 'ul',
+      'attributes' => array('class' => 'coursepack_members'),
+    );
+  }
+  $variables['links'] = NULL;
+  if ($list_variables) {
+    $variables['links'] = theme_item_list($list_variables);
+  }
   $block = module_invoke('agile_coursepack', 'block_view', 'coursepack_solr');
   $variables['search_block'] = render($block['content']);
   if (islandora_object_access_callback(ISLANDORA_METADATA_EDIT, $object)) {
-    $variables['metadata_link'] = l(t("Edit metadata"), "islandora/edit_form/{$object->id}/MODS");
+    $variables['metadata_link'] = l(t("Edit metadata"), "agile_coursepack/add_coursepack/{$object->id}");
     $variables['manage_link'] = l(t("Manage members"), "islandora/object/{$object->id}/manage/compound");
     $variables['consolidate_link'] = l(t("Download Coursepack PDFs"), "agile_coursepack/consolidate/{$object->id}");
   }
