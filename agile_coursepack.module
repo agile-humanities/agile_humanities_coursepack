@@ -37,8 +37,8 @@ function agile_coursepack_menu() {
     'type' => MENU_CALLBACK,
   );
   $items['agile_coursepack/add_coursepack'] = array(
-    'title' => 'Add coursepack',
-    'description' => 'Create coursepack.',
+    'title' => 'Coursepack Metadata',
+    'description' => 'Create or edit coursepack metadata.',
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer site configuration'),
     'page arguments' => array('agile_coursepack_add_coursepack_form'),
