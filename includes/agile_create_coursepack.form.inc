@@ -27,9 +27,10 @@ function agile_coursepack_add_coursepack_form(array $form, array &$form_state, $
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $module_path = drupal_get_path('module', 'agile_coursepack');
   if ($new) {
+    $licence = l('Creative Commons Attribution-NonCommercial 4.0 International License.', 'http://creativecommons.org/licenses/by-nc/4.0/');
     $form['license'] = array(
       '#type' => 'markup',
-      '#markup' => t('All coursepacks will be created with a Creative Commons ccby license.'),
+      '#markup' => t('All coursepacks will be created with a !license', array('!license' => "<br />$licence")),
     );
   }
   $form['new'] = array(
