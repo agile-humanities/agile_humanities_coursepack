@@ -11,12 +11,15 @@
  * @return string
  */
 function agile_coursepack_browse() {
+  global $_islandora_solr_queryclass;
   module_load_include('inc', 'islandora_solr', 'includes/block');
   module_load_include('inc', 'agile_coursepack', 'includes/coursepack_splash');
   $module_path = drupal_get_path('module', 'agile_coursepack');
   drupal_add_css("$module_path/css/agile_coursepack_splash.css");
   $block = module_invoke('islandora_solr', 'block_view', 'simple');
-  $content = render($block['content']);
+  $sort = module_invoke('islandora_solr', 'block_view', 'sort');
+  $content = render($sort['content']);
+  $content .= render($block['content']);
   $path_parts = explode('/', $_GET['q']);
   $query = '%20';
   if (isset($path_parts[2])) {

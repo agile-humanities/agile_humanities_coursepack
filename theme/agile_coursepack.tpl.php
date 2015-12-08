@@ -12,6 +12,8 @@
   <?php print $manage_link; ?>
   <br />
   <?php print $consolidate_link; ?>
+  <br />
+  <?php print $clone_link; ?>
   <?php print $document; ?>
   <?php print $links; ?>
 </div>

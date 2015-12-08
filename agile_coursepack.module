@@ -74,6 +74,15 @@ function agile_coursepack_menu() {
     'file' => 'includes/utilities.inc',
     'type' => MENU_CALLBACK,
   );
+  $items['agile_coursepack/clone'] = array(
+    'title' => 'Clone existing coursepack',
+    'description' => 'Copy Coursepack for modification',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('agile_coursepack_clone_form'),
+    'file' => 'includes/agile_coursepack_clone.form.inc',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
 
 
   return $items;
@@ -104,6 +113,10 @@ function agile_coursepack_permission() {
     'edit coursepacks' => array(
       'title' => t('Create New Coursepacks'),
       'description' => t('Allows users to create anthologies'),
+    ),
+    'add source content' => array(
+      'title' => t('Add new content'),
+      'description' => t('Allows users to upload content'),
     ),
   );
 }

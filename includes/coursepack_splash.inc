@@ -77,19 +77,21 @@ function agile_coursepack_buttons() {
     '#attributes' => array('class' => array('agile-coursepack-splash-button')),
     '#id' => 'agile-coursepack-coursepacks',
   );
-
-  $form['buttons']['create'] = array(
-    '#type' => 'button',
-    '#value' => t("Create new coursepack"),
-    '#attributes' => array('class' => array('agile-coursepack-splash-button')),
-    '#id' => 'agile-coursepack-create',
-  );
-
-  $form['buttons']['add'] = array(
-    '#type' => 'button',
-    '#value' => t("Add new item"),
-    '#attributes' => array('class' => array('agile-coursepack-splash-button')),
-    '#id' => 'agile-coursepack-add',
-  );
+  if (user_access('create new coursepacks')) {
+    $form['buttons']['create'] = array(
+      '#type' => 'button',
+      '#value' => t("Create new coursepack"),
+      '#attributes' => array('class' => array('agile-coursepack-splash-button')),
+      '#id' => 'agile-coursepack-create',
+    );
+  }
+  if (user_access('add source content')) {
+    $form['buttons']['add'] = array(
+      '#type' => 'button',
+      '#value' => t("Add new item"),
+      '#attributes' => array('class' => array('agile-coursepack-splash-button')),
+      '#id' => 'agile-coursepack-add',
+    );
+  }
   return $form;
 }

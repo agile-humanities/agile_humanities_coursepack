@@ -30,10 +30,12 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   }
   $block = module_invoke('agile_coursepack', 'block_view', 'coursepack_solr');
   $variables['search_block'] = render($block['content']);
-  if (islandora_object_access_callback(ISLANDORA_METADATA_EDIT, $object)) {
+  if (user_access('edit coursepacks')) {
     $variables['metadata_link'] = l(t("Edit metadata"), "agile_coursepack/add_coursepack/{$object->id}");
     $variables['manage_link'] = l(t("Manage members"), "islandora/object/{$object->id}/manage/compound");
-    $variables['consolidate_link'] = l(t("Download Coursepack PDFs"), "agile_coursepack/consolidate/{$object->id}");
   }
+  
+  $variables['consolidate_link'] = l(t("Download Coursepack PDFs"), "agile_coursepack/consolidate/{$object->id}");
+  $variables['clone_link'] = l(t("Clone coursepack"), "agile_coursepack/clone/{$object->id}");
   $variables['document'] = theme('islandora_document', array('islandora_object' => $object));
 }
