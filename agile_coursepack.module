@@ -11,8 +11,9 @@
 function agile_coursepack_menu() {
   $items = array();
   $items['agile/coursepack/splash'] = array(
+    'title' => 'Coursepack Splash',
     'description' => 'Coursepack landing page',
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_CALLBACK,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('agile_coursepack_splash'),
     'file' => 'includes/coursepack_splash.inc',
@@ -252,7 +253,7 @@ function agile_coursepack_form_islandora_solr_simple_search_form_alter(&$form, &
  */
 function agile_coursepack_solr_search_form_submit($form, &$form_state) {
   $search_string = str_replace('/', '~slsh~', $form_state['values']['islandora_simple_search_query']);
-  $filter = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_basic_imagel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:islandora:sp_document"';
+  $filter = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_basic_image" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:islandora:sp_document"';
   $options = array('query' => array('type' => 'dismax', 'fq' => $filter));
   drupal_goto('agile_coursepack/browse/' . $search_string, $options);
 }
@@ -352,7 +353,7 @@ function agile_coursepack_block_view($delta = '') {
  */
 function agile_coursepack_islandora_solr_query($islandora_solr_query) {
   if (isset($_GET['q']) && $_GET['q'] == 'agile_coursepack/browse') {
-    $filter = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_basic_imagel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:islandora:sp_document"';
+    $filter = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:islandora:sp_document"';
     $islandora_solr_query->solrParams['fq'][] = $filter;
   }
   if (isset($_GET['q']) && $_GET['q'] == 'agile_coursepack/coursepacks') {
