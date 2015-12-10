@@ -21,6 +21,7 @@ class CPData {
     'cp:instructortitle' => array(),
     'cp:department' => array(),
     'cp:institution' => array(),
+    'cp:attribution' => array(),
   );
   public $owner;
 
@@ -48,6 +49,19 @@ class CPData {
     if (is_string($value) && is_array($this->cp[$element_name])) {
       $this->cp[$element_name][] = $value;
     }
+  }
+
+  /**
+   * Get an element.
+   *
+   * @param string $element_name
+   *   The name of the element to add.
+   *
+   * @return 
+   *   Element's value, 
+   */
+  public function getElement($element_name) {
+    return isset($this->cp[$element_name]) ? implode(', ' ,$this->cp[$element_name]) : NULL;
   }
 
   /**
@@ -126,8 +140,8 @@ class CPData {
           $element_label = drupal_ucfirst($cp_label[1]);
           $i18n_object_id = drupal_strtolower($element_label);
           $cp_array[$field]['label'] = function_exists('i18n_string') ?
-            i18n_string("islandora:cp:{$i18n_object_id}:label", $element_label) :
-            $element_label;
+              i18n_string("islandora:cp:{$i18n_object_id}:label", $element_label) :
+              $element_label;
           $cp_array[$field]['value'] = filter_xss($value);
           $cp_array[$field]['class'] = drupal_strtolower(preg_replace('/[^A-Za-z0-9]/', '-', $field));
           $cp_array[$field]['dcterms'] = preg_replace('/^dc/', 'dcterms', $field);
@@ -156,7 +170,7 @@ class CPData {
           array_push($new_cp->cp[$child->nodeName], $child->nodeValue);
         }
       }
-      return $new_cp;
+      return $new_cp->cp;
     }
     return NULL;
   }
