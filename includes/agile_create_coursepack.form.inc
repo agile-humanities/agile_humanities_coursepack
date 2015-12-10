@@ -17,7 +17,7 @@ function agile_coursepack_add_coursepack_form(array $form, array &$form_state, $
   if ($pid) {
     $coursepack = islandora_object_load($pid);
     $cp = new CPData($coursepack['CPDATA']->content);
-    $cp_values = $cp->cp->cp;
+    $cp_values = $cp->cp;
     $new = FALSE;
     $form['pid'] = array(
       '#type' => 'hidden',
