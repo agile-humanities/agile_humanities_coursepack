@@ -354,7 +354,11 @@ function agile_coursepack_block_view($delta = '') {
 function agile_coursepack_islandora_solr_query($islandora_solr_query) {
 
   if (isset($_GET['q']) && strpos($_GET['q'], 'agile_coursepack/browse') === 0) {
-    $filter = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel" OR RELS_EXT_hasModel_uri_s:"info:fedora/islandora:islandora:sp_document"';
+    $filters[] = 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_document"';
+    $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel"';
+    $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel"';
+    $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel"';
+    $filter = implode(' OR ', $filters);
     $islandora_solr_query->solrParams['fq'][] = $filter;
   }
   if (isset($_GET['q']) && strpos($_GET['q'], 'agile_coursepack/coursepacks') === 0) {
