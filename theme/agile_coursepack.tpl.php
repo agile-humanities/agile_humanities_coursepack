@@ -15,6 +15,6 @@
   <br />
   <?php print $clone_link; ?>
   <?php print $document; ?>
-  <?php print t("Transmogrified from !link", array('!link' => $attribution)); ?>
+  <?php print (isset($attributions)) ? t("Transmogrified from !link", array('!link' => $attribution)) : ''; ?>
   <?php print $links; ?>
 </div>
