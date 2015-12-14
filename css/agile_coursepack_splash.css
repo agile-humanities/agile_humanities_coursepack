@@ -11,6 +11,8 @@
 .agile-coursepack-splash-button{
     width:99%;
     padding-bottom: 8px;
+    white-space: pre-wrap;
+    word-break: keep-all; 
 }
 .agile-coursepack-date {
     width : 25px;
