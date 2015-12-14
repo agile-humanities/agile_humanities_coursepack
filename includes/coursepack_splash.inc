@@ -73,7 +73,7 @@ function agile_coursepack_buttons() {
 
   $form['buttons']['coursespacks'] = array(
     '#type' => 'button',
-    '#value' => t("Browse Coursepacks"),
+    '#value' => t("Browse coursepacks"),
     '#attributes' => array('class' => array('agile-coursepack-splash-button')),
     '#id' => 'agile-coursepack-coursepacks',
   );
