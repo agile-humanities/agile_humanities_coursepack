@@ -3,7 +3,7 @@
 function agile_coursepack_clone_form($form, $form_state, $pid) {
   $object = islandora_object_load($pid);
   $form['intro'] = array(
-    '#markup' => t("Clone @label", array('@label' => $object->label)),
+    '#markup' => t("Duplicate @label", array('@label' => $object->label)),
   );
   $form['new_name'] = array(
     '#type' => 'textfield',
@@ -17,7 +17,7 @@ function agile_coursepack_clone_form($form, $form_state, $pid) {
   );
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t("Clone coursepack"),
+    '#value' => t("Duplicate coursepack"),
   );
   return $form;
 }
