@@ -180,7 +180,7 @@ function coursepack_build_mods($inputs) {
   add_originInfo($xml, $inputs);
   add_language($xml, $inputs['language']);
   add_manifestation($xml, $inputs['manifestation']);
-
+  add_genre($xml, $inputs['genre']);
   return $xml->saveXML();
 }
 
@@ -279,9 +279,6 @@ function add_language($xml, $language) {
   $language_node->appendChild($languageTerm_node);
 }
 
-
- 
-
 /**
  * Adds manifestation to document.
  *
@@ -298,4 +295,12 @@ function add_manifestation($xml, $manifestation) {
   $note_node = $xml->createElementNS($mods_uri, 'mods:note', $manifestation);
   $note_node->setAttribute('type', 'manifestation');
   $physicalDescription_node->appendChild($note_node);
+}
+
+function add_genre($xml, $genre) {
+  $mods_uri = "http://www.loc.gov/mods/v3";
+  $root = $xml->documentElement;
+  $genre_node = $xml->createElementNS($mods_uri, 'mods:genre', $genre);
+  $genre_node->setAttribute( 'authority', 'marcgt');
+  $root->appendChild($genre_node);
 }

@@ -5,6 +5,8 @@ dependencies[] = islandora_solr
 dependencies[] = islandora_document
 dependencies[] = islandora_compound_object
 dependencies[] = entity
+dependencies[] = date
+dependencies[] = datepicker
 
 package = Agile Humanities
 core = 7.x
