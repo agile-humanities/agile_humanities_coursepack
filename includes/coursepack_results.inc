@@ -61,9 +61,9 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
    * @return array
    *   An associative array as used as headers by theme_tableselect()/
    */
-  protected function getTableHeader_x() {
+  protected function getTableHeader() {
     return array(
-      'markup' => t("Object's Label"),
+      'markup' => t("Title"),
     );
   }
 

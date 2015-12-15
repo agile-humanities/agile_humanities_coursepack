@@ -179,6 +179,7 @@ function coursepack_build_mods($inputs) {
   add_authority($xml, 'authority', $name);
   add_originInfo($xml, $inputs);
   add_language($xml, $inputs['language']);
+  add_manifestation($xml, $inputs['manifestation']);
 
   return $xml->saveXML();
 }
@@ -276,4 +277,25 @@ function add_language($xml, $language) {
   $languageTerm_node->setAttribute('authority', 'iso639-2b');
   $languageTerm_node->setAttribute('type', 'code');
   $language_node->appendChild($languageTerm_node);
+}
+
+
+ 
+
+/**
+ * Adds manifestation to document.
+ *
+ * @param DomDocument $xml
+ *   DomDocument to which values are added
+ * @param string $manifestation
+ *   Manifestation to be added
+ */
+function add_manifestation($xml, $manifestation) {
+  $mods_uri = "http://www.loc.gov/mods/v3";
+  $root = $xml->documentElement;
+  $physicalDescription_node = $xml->createElementNS($mods_uri, 'mods:physicalDescription');
+  $root->appendChild($physicalDescription_node);
+  $note_node = $xml->createElementNS($mods_uri, 'mods:note', $manifestation);
+  $note_node->setAttribute('type', 'manifestation');
+  $physicalDescription_node->appendChild($note_node);
 }
