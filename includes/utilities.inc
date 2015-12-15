@@ -70,15 +70,18 @@ function agile_coursepack_download($pid) {
   $zip = new ZipArchive();
   $tmp_file = drupal_realpath(tempnam('temporary://', "agile_coursepack_"));
   $zip->open($tmp_file, ZipArchive::CREATE);
+  $counter = 1;
   foreach ($pids as $pid) {
     $object = islandora_object_load($pid);
     if ($object['PDF']) {
-      $clean_name = str_replace(' ', '_', $object->label) . '.pdf';
+      $clean_name = str_pad($counter, 2, "00", STR_PAD_LEFT);
+      $clean_name .= "-" . str_replace(' ', '_', $object->label) . '.pdf';
       $filename = drupal_realpath(file_create_filename("$clean_name", 'temporary://'));
       $pdf = $object['PDF']->content;
       file_put_contents($filename, $pdf, FILE_APPEND | LOCK_EX);
       $realpath = drupal_realpath($filename);
       $success = $zip->addFile($realpath, $clean_name);
+      $counter++;
     }
   }
   $zip->close();
