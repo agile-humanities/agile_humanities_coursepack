@@ -18,8 +18,6 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
     parent::__construct();
   }
 
-
-
   /**
    * Form building method.
    *
@@ -45,9 +43,10 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
     if (count($rows) > 0) {
       $form = array_merge($this->getActions($form_state), $form);
     }
+
     $form['islandora_solr_select_table'] = array(
-      '#header' => $header,
       '#type' => 'tableselect',
+      '#header' => $header,
       '#options' => $rows,
       '#attributes' => array('class' => array('islandora-bookmark-solr-results')),
       '#empty' => t('No results found.'),
@@ -59,11 +58,12 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
    * Get the header row to use in the tableselect.
    *
    * @return array
-   *   An associative array as used as headers by theme_tableselect()/
+   *   An associative array as used as headers by theme_tableselect()
    */
   protected function getTableHeader() {
     return array(
-      'markup' => t("Title"),
+      'title' => t('Title'),
+      'author' => t('Author'),
     );
   }
 
@@ -78,25 +78,19 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
    *   $this->getTableHeader().
    */
   protected function getTableRow($object_result) {
-    $doc = $object_result['solr_doc'];
-    $solr_field = variable_get('islandora_solr_object_label_field', 'fgs_label_s');
-    $markup = '';
-    if (isset($doc[$solr_field])) {
-      $markup = $doc[$solr_field];
+    $title = t("Unnamed item");
+    if (isset($object_result['solr_doc']['mods_titleInfo_title_s'])) {
+      $title = $object_result['solr_doc']['mods_titleInfo_title_s'];
     }
-    else {
-      $object = islandora_object_load($object_result['PID']);
-      $markup = $object->label;
+    $author = "Unknown author";
+    if (isset($object_result['solr_doc']['mods_name_personal_namePart_s'])) {
+      $author = $object_result['solr_doc']['mods_name_personal_namePart_s'];
     }
-
-    $object_url_info = array(
-      'path' => $object_result['object_url'],
-      'params' => $object_result['object_url_params'],
-      'markup' => $markup,
-    );
+    $url = $object_result['object_url'];
 
     return array(
-      'markup' => islandora_bookmark_generate_markup($object_result['PID'], $object_url_info),
+      'title' => l($title, $url),
+      'author' => "$author",
     );
   }
 
@@ -163,7 +157,7 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
   protected function hasObjectsSelected($form, &$form_state) {
     $pids = $this->getSelected($form_state);
     if (empty($pids)) {
-      form_set_error('islandora_bookmark_table', t('You must select at least one object.'));
+      form_set_error('coursepack_table', t('You must select at least one object.'));
     }
   }
 
@@ -224,7 +218,7 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
    */
   protected function coursepackAdd($pids, &$form_state) {
     $objects = array();
-    foreach($pids as $pid) {
+    foreach ($pids as $pid) {
       $objects[] = islandora_object_load($pid);
     }
     $objects_to_add = array();
@@ -287,8 +281,8 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
 
     // Helper anonymous function... Just get the PID.
     $get_pid = function($result) {
-          return $result['PID'];
-        };
+      return $result['PID'];
+    };
 
     $qp = $this->islandoraSolrQueryProcessor;
     $old_params = $qp->solrParams;
