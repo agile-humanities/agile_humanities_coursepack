@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Interface to allow browsing of content only.
- *
- * @return string
+ * @file
+ * Solr browse defintion.
  */
 
 /**

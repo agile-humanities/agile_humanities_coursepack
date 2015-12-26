@@ -61,7 +61,7 @@ class CPData {
    *   Element's value, 
    */
   public function getElement($element_name) {
-    return isset($this->cp[$element_name]) ? implode(', ' ,$this->cp[$element_name]) : NULL;
+    return isset($this->cp[$element_name]) ? implode(', ', $this->cp[$element_name]) : NULL;
   }
 
   /**
@@ -89,7 +89,7 @@ class CPData {
    */
   public function asXML() {
     $cp_xml = new DomDocument();
-    $cp_xml->formatOutput = true;
+    $cp_xml->formatOutput = TRUE;
     $cp_root = $cp_xml->createElementNS('http://agilehumanities.ca/cp', 'cp:coursepack');
     $cp_root->setAttribute('xmlns:cp', 'http://agilehumanities.ca/cp');
     $this->cp = array_filter($this->cp);

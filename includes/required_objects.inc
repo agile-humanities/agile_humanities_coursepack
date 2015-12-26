@@ -1,5 +1,12 @@
 <?php
+/**
+ * @file
+ * Required objects for islandora hook.
+ */
 
+/**
+ * Implements hook_get_required_objects().
+ */
 function agile_coursepack_get_required_objects($connection) {
   $module_path = drupal_get_path('module', 'agile_coursepack');
   // Document Content Model.

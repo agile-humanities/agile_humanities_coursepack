@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @file
+ * Clone form definitons.
+ */
 function agile_coursepack_clone_form($form, $form_state, $pid) {
   $object = islandora_object_load($pid);
   $form['intro'] = array(
@@ -38,8 +42,8 @@ function agile_coursepack_clone_form_submit($form, $form_state) {
   $new_object['CPDATA']->content = $cp->asXML();
   $object = islandora_add_object($new_object);
   $child_keys = array_keys(islandora_compound_object_get_parts($old_object->id, TRUE));
-  foreach($child_keys as $child) {
-    $children[] =islandora_object_load($child);
+  foreach ($child_keys as $child) {
+    $children[] = islandora_object_load($child);
   }
   islandora_compound_object_add_parent($children, $object->id);
   drupal_goto("islandora/object/{$object->id}");

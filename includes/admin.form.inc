@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @file
+ * Admin form.
+ */
 function agile_coursepack_admin_settings_form(array $form, array &$form_state) {
   $about_node = variable_get('agile_coursepack_about_node_id', '');
   $namespace = variable_get('agile_coursepack_object_namespace', 'islandora');

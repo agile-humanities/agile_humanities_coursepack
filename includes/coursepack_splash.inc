@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Landing page form definitions.
+ */
+
+/**
  * Splash page.
  *
  * @param array $form

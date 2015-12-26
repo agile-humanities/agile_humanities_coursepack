@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Form definition to add ne items.
+ */
+
+/**
  * Coursepack's add item form.
  *
  * @param array $form
