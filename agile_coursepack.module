@@ -368,10 +368,17 @@ function agile_coursepack_islandora_solr_query($islandora_solr_query) {
 }
 
 function agile_coursepack_form_islandora_compound_object_manage_form_alter(&$form, &$form_state, $form_id) {
-  $pid = $form_state['object']->id;
-  $link = l(t('Return to coursepack view'), "islandora/object/$pid");
-  $form['view'] = array(
-    '#markup' => $link,
-    '#weight' => -5,
-  );
+  if (in_array('islandora:coursepackCModel', $form_state['object']->models)) {
+    $pid = $form_state['object']->id;
+    $link = l(t('Return to coursepack view'), "islandora/object/$pid");
+    if (isset($form['children'])) {
+      $form['children']['#title'] = t('Remove items from your coursepack');
+    }
+    unset($form['add_children']);
+    unset($form['add_to_parent']);
+    $form['view'] = array(
+      '#markup' => $link,
+      '#weight' => -5,
+    );
+  }
 }

@@ -35,11 +35,13 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   $variables['search_block'] = render($block['content']);
   if (user_access('edit coursepacks')) {
     $variables['metadata_link'] = l(t("Edit metadata"), "agile_coursepack/add_coursepack/{$object->id}");
-    $variables['manage_link'] = l(t("Add, delete or rearrange items"), "islandora/object/{$object->id}/manage/compound");
+    $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
   }
 
   $variables['consolidate_link'] = l(t("Download Coursepack PDFs"), "agile_coursepack/consolidate/{$object->id}");
-  $variables['clone_link'] = l(t("Duplicate and modify this coursepack"), "agile_coursepack/clone/{$object->id}");
+  if(user_access('create new coursepacks')) {
+    $variables['clone_link'] = l(t("Duplicate and modify this coursepack"), "agile_coursepack/clone/{$object->id}");
+  }
   $variables['document'] = theme('islandora_document', array('islandora_object' => $object));
   $variables['attribution'] = $cpdata->getElement("cp:attribution");
 }

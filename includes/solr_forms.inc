@@ -34,7 +34,7 @@ function agile_coursepack_search_form($form, &$form_state) {
   );
   $form['simple']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Find assets to add to this coursepack'),
+    '#value' => t('Add items'),
   );
   return $form;
 }
