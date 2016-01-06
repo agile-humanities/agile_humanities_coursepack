@@ -31,7 +31,6 @@ function agile_coursepack_get_pid_from_url() {
       }
     }
   }
-
   return $is_coursepack ? $object->id : FALSE;
 }
 
@@ -57,6 +56,7 @@ function coursepack_get_extensions() {
     'image' => $image_extensions,
   );
 }
+
 /**
  * Downloads all associated pdfs.
  *
@@ -73,16 +73,21 @@ function agile_coursepack_download($pid) {
   $counter = 1;
   foreach ($pids as $pid) {
     $object = islandora_object_load($pid);
-    if ($object['PDF']) {
-      $clean_name = str_pad($counter, 2, "00", STR_PAD_LEFT);
-      $clean_name .= "-" . str_replace(' ', '_', $object->label) . '.pdf';
-      $filename = drupal_realpath(file_create_filename("$clean_name", 'temporary://'));
-      $pdf = $object['PDF']->content;
-      file_put_contents($filename, $pdf, FILE_APPEND | LOCK_EX);
-      $realpath = drupal_realpath($filename);
-      $success = $zip->addFile($realpath, $clean_name);
-      $counter++;
+    $stream = $object['PDF'] ? 'PDF' : 'OBJ';
+    $extension = 'pdf';
+    if ($stream == 'OBJ') {
+      $mime_type = $object['OBJ']->mimeType;
+      $mime_detect = new MimeDetect();
+      $extension = $mime_detect->getExtension($mime_type);
     }
+    $clean_name = str_pad($counter, 2, "00", STR_PAD_LEFT);
+    $clean_name .= "-" . str_replace(' ', '_', $object->label) . ".$extension";
+    $filename = drupal_realpath(file_create_filename("$clean_name", 'temporary://'));
+    $contents = $object[$stream]->content;
+    file_put_contents($filename, $contents, FILE_APPEND | LOCK_EX);
+    $realpath = drupal_realpath($filename);
+    $success = $zip->addFile($realpath, $clean_name);
+    $counter++;
   }
   $zip->close();
   $download = str_replace(' ', '_', $pack->label) . '.zip';

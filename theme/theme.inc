@@ -38,7 +38,7 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
     $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
   }
 
-  $variables['consolidate_link'] = l(t("Download Coursepack PDFs"), "agile_coursepack/consolidate/{$object->id}");
+  $variables['consolidate_link'] = l(t("Download Coursepack Material"), "agile_coursepack/consolidate/{$object->id}");
   if (user_access('create new coursepacks')) {
     $variables['clone_link'] = l(t("Duplicate and modify this coursepack"), "agile_coursepack/clone/{$object->id}");
   }
