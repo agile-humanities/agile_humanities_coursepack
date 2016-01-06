@@ -38,19 +38,23 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
     $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
   }
 
-  $variables['consolidate_link'] = l(t("Download Coursepack Material"), "agile_coursepack/consolidate/{$object->id}");
+  $variables['consolidate_link'] = l(t("Download coursepack material"), "agile_coursepack/consolidate/{$object->id}");
   if (user_access('create new coursepacks')) {
     $variables['clone_link'] = l(t("Duplicate and modify this coursepack"), "agile_coursepack/clone/{$object->id}");
   }
   $variables['document'] = theme('islandora_document', array('islandora_object' => $object));
   $variables['attribution'] = $cpdata->getElement("cp:attribution");
+  $contact_email = variable_get('agile_coursepack_admin_email', FALSE);
+  if ($contact_email) {
+    $variables['contact'] = l('Contact Administrator if any content in this coursepack violates copyright.', "mailto:$contact_email", array('absolute' => TRUE));
+  }
 }
 
 /**
  * Implements hook_preprocess_theme().
  */
 function agile_coursepack_process_islandora_document(&$variables) {
-  if (isset($variables['islandora_thumbnail_img']) &&isset($variables['islandora_full_url'])) {
+  if (isset($variables['islandora_thumbnail_img']) && isset($variables['islandora_full_url'])) {
     $variables['islandora_content'] = l($variables['islandora_thumbnail_img'], $variables['islandora_full_url'], array('html' => TRUE));
   }
 }

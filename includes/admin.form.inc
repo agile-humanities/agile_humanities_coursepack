@@ -27,5 +27,9 @@ function agile_coursepack_admin_settings_form(array $form, array &$form_state) {
     '#default_value' => $namespace,
     '#size' => 5,
   );
+    $form['agile_coursepack_admin_email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email address of individual responsible for site content'),
+  );
   return system_settings_form($form);
 }
