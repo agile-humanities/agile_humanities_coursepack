@@ -112,8 +112,8 @@ function agile_coursepack_permission() {
       'description' => t('Allows users to create anthologies'),
     ),
     'edit coursepacks' => array(
-      'title' => t('Create New Coursepacks'),
-      'description' => t('Allows users to create anthologies'),
+      'title' => t('Edit New Coursepacks'),
+      'description' => t('Allows users to edit anthologies'),
     ),
     'add source content' => array(
       'title' => t('Add new content'),
@@ -163,7 +163,7 @@ function agile_coursepack_islandora_xml_form_builder_form_associations() {
  */
 function agile_coursepack_islandora_coursepackCModel_islandora_view_object($object) {
   if (!$object['OBJ']) {
-    return t('No description available');
+   // return t('No description available');
   }
   $output = theme('agile_coursepack', array('islandora_object' => $object));
   return array('' => $output);

@@ -15,6 +15,6 @@
     <br />
     <?php print $manage_link; ?>
     <?php print $document; ?>
-    <?php print (isset($attribution)) ? t("Transmogrified from !link", array('!link' => $attribution)) : ''; ?>
+    <?php print $attribution ? t("Transmogrified from !link", array('!link' => $attribution)) : ''; ?>
     <?php print $links; ?>
 </div>

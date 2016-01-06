@@ -150,12 +150,14 @@ function agile_coursepack_add_coursepack_form_submit(array $form, array &$form_s
     $cpdata_ds->mimetype = 'text/xml';
     $object->ingestDatastream($cpdata_ds);
     // Add primary resource
-    $source_file = file_load($form_state['values']['source_file']);
-    $ds = $object->constructDatastream('OBJ', 'M');
-    $ds->setContentFromFile(drupal_realpath($source_file->uri), FALSE);
-    $ds->label = 'OBJ';
-    $ds->mimetype = $source_file->filemime;
-    $object->ingestDatastream($ds);
+    if ($form_state['values']['source_file']) {
+      $source_file = file_load($form_state['values']['source_file']);
+      $ds = $object->constructDatastream('OBJ', 'M');
+      $ds->setContentFromFile(drupal_realpath($source_file->uri), FALSE);
+      $ds->label = 'OBJ';
+      $ds->mimetype = $source_file->filemime;
+      $object->ingestDatastream($ds);
+    }
     $object->relationships->add(FEDORA_MODEL_URI, 'hasModel', 'islandora:coursepackCModel');
     $object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOf', 'islandora:coursepacks');
     $ingested_object = islandora_add_object($object);
