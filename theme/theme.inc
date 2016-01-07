@@ -50,11 +50,4 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   }
 }
 
-/**
- * Implements hook_preprocess_theme().
- */
-function agile_coursepack_process_islandora_document(&$variables) {
-  if (isset($variables['islandora_thumbnail_img']) && isset($variables['islandora_full_url'])) {
-    $variables['islandora_content'] = l($variables['islandora_thumbnail_img'], $variables['islandora_full_url'], array('html' => TRUE));
-  }
-}
+
