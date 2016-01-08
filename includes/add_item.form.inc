@@ -20,6 +20,7 @@ function agile_coursepack_add_item_form(array $form, array &$form_state, $pid = 
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $module_path = drupal_get_path('module', 'agile_coursepack');
   if ($pid) {
+    drupal_set_title('Edit Metatdata');
     $object = islandora_object_load($pid);
     $results = agile_coursepack_info_fields($object);
     $name_parts = explode(',', $results['name'][0]);
@@ -137,8 +138,10 @@ function agile_coursepack_add_item_form_submit(array $form, array &$form_state) 
   if (isset($form_state['pid'])) {
     $pid = $form_state['pid'];
     $object = islandora_object_load($form_state['pid']);
-    $new_mods = coursepack_build_mods($form_state['values']);
     $object['MODS']->content = coursepack_build_mods($form_state['values']);
+    if ($object->label != $form_state['values']['title']) {
+      $object->label = $form_state['values']['title'];
+    }
     drupal_set_message(t("Metadata updated"));
     $form_state['redirect'] = "islandora/object/$pid";
     return;

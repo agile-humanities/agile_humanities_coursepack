@@ -34,6 +34,7 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   $block = module_invoke('agile_coursepack', 'block_view', 'coursepack_solr');
   $variables['search_block'] = render($block['content']);
   if (user_access('edit coursepacks')) {
+    $variables['solr_link'] = l(t("Add items to coursepack"), "agile_coursepack/solr_redirect/{$object->id}");
     $variables['metadata_link'] = l(t("Edit metadata"), "agile_coursepack/add_coursepack/{$object->id}");
     $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
   }

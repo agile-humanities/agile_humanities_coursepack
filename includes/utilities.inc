@@ -134,3 +134,28 @@ function agile_populate_coursepack($pid) {
 
   return $content;
 }
+
+function agile_coursepack_solr_redirect($coursepack_pid) {
+  if (!isset($_GET['hidden_filter'])) {
+    $_GET['hidden_filter'] = array('');
+  }
+  else {
+    $_GET['hidden_filter'][0] .= ' || ';
+  }
+  $content_models = array(
+    'info:fedora/islandora:sp_videoCModel',
+    'info:fedora/islandora:sp-audioCModel',
+    'info:fedora/islandora:sp_basic_image',
+    'info:fedora/islandora:sp_large_image_cmodel',
+    'info:fedora/islandora:sp_document',
+  );
+  $content_models_string = implode('" || "', $content_models);
+  $_GET['hidden_filter'][0] .= 'RELS_EXT_hasModel_uri_ms:("' . $content_models_string . '")';
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
+  $search_string = '%20';
+  $options = array('query' => array('type' => 'dismax'));
+  $options['query']['display'] = 'coursepack';
+  $options['query']['pid'] = $coursepack_pid;
+  $options['query']['hidden_filter'][0] = 'RELS_EXT_hasModel_uri_ms:("' . $content_models_string . '")';
+  drupal_goto('islandora/search/' . $search_string, $options);
+}

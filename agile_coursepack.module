@@ -84,7 +84,14 @@ function agile_coursepack_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
-
+  $items['agile_coursepack/solr_redirect'] = array(
+    'title' => 'Redirect search',
+    'description' => 'Redirect Solr search',
+    'page callback' => 'agile_coursepack_solr_redirect',
+    'file' => 'includes/utilities.inc',
+    'access arguments' => array('edit coursepacks'),
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
@@ -306,19 +313,6 @@ function agile_coursepack_advanced_solr_search_form_submit($form, &$form_state) 
 }
 
 /**
- * Implements hook_block_view_alter().
- */
-function agile_coursepack_block_view_alter_x(&$data, $block) {
-  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
-  $coursepack_pid = agile_coursepack_get_pid_from_url();
-  if ($coursepack_pid && isset($data['subject']) && $data['subject'] == 'Islandora simple search') {
-    $object = islandora_object_load($coursepack_pid);
-    $data['subject'] = t("Add digital assets to @label", array('@label' => $object->label));
-    $block->visibility = TRUE;
-  }
-}
-
-/**
  * Implements hook_block_info().
  */
 function agile_coursepack_block_info() {
@@ -385,7 +379,9 @@ function agile_coursepack_form_islandora_compound_object_manage_form_alter(&$for
  */
 function agile_coursepack_process_islandora_document(&$variables) {
   $pid = $variables['islandora_object']->id;
-  $edit = l("Edit Metadata", "agile_coursepack/add_item/$pid");
+  $object = islandora_object_load($pid);
+  $edit = (in_array('islandora:coursepackCModel', $object->models)) ? NULL : l("Edit Metadata", "agile_coursepack/add_item/$pid");
+
   if (isset($variables['islandora_thumbnail_img']) && isset($variables['islandora_full_url'])) {
     $variables['islandora_content'] = $edit . l($variables['islandora_thumbnail_img'], $variables['islandora_full_url'], array('html' => TRUE));
   }
