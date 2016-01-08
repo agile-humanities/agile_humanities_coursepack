@@ -41,7 +41,7 @@ function agile_coursepack_menu() {
     'title' => 'Coursepack Metadata',
     'description' => 'Create or edit coursepack metadata.',
     'page callback' => 'drupal_get_form',
-    'access arguments' => array('Create New Coursepacks'),
+    'access arguments' => array('create new coursepacks'),
     'page arguments' => array('agile_coursepack_add_coursepack_form'),
     'file' => 'includes/agile_create_coursepack.form.inc',
     'type' => MENU_CALLBACK,
