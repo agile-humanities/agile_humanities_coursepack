@@ -349,6 +349,8 @@ function agile_coursepack_islandora_solr_query($islandora_solr_query) {
     $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_large_image_cmodel"';
     $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp-audioCModel"';
     $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_videoCModel"';
+    $filters[] .= 'RELS_EXT_hasModel_uri_s:"info:fedora/islandora:sp_basic_image"';
+
     $filter = implode(' OR ', $filters);
     $islandora_solr_query->solrParams['fq'][] = $filter;
   }
