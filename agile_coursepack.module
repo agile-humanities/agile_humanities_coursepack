@@ -32,7 +32,7 @@ function agile_coursepack_menu() {
     'title' => 'Add item',
     'description' => 'Add digital asset to repository.',
     'page callback' => 'drupal_get_form',
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('add source content'),
     'page arguments' => array('agile_coursepack_add_item_form'),
     'file' => 'includes/add_item.form.inc',
     'type' => MENU_CALLBACK,
