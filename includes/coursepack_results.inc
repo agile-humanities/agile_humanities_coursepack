@@ -64,8 +64,8 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
     return array(
       'title' => t('Title'),
       'author' => t('Author'),
-      'date' => t('Date'),
-      'origin' => t('Country of origin'),
+      'origin' => t('Place of Publication'),
+      'date' => t('Date of Publication'),
     );
   }
 
@@ -100,8 +100,8 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
     return array(
       'title' => l($title, $url),
       'author' => "$author",
-      'date' => $date,
       'origin' => $origin,
+      'date' => $date,
     );
   }
 
