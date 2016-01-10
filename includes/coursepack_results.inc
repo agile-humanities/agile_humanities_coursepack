@@ -64,6 +64,8 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
     return array(
       'title' => t('Title'),
       'author' => t('Author'),
+      'date' => t('Date'),
+      'origin' => t('Country of origin'),
     );
   }
 
@@ -87,10 +89,19 @@ class IslandoraSolrResultsCoursepack extends IslandoraSolrResultsBookmark {
       $author = $object_result['solr_doc']['mods_name_personal_namePart_s'];
     }
     $url = $object_result['object_url'];
-
+    $date = "";
+    if (isset($object_result['solr_doc']['mods_originInfo_dateIssued_s'])) {
+      $date = $object_result['solr_doc']['mods_originInfo_dateIssued_s'];
+    }
+    $origin = "";
+    if (isset($object_result['solr_doc']['mods_originInfo_place_placeTerm_authority_marccountry_t'])) {
+      $origin = $object_result['solr_doc']['mods_originInfo_place_placeTerm_authority_marccountry_t'];
+    }
     return array(
       'title' => l($title, $url),
       'author' => "$author",
+      'date' => $date,
+      'origin' => $origin,
     );
   }
 
