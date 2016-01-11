@@ -9,6 +9,7 @@
  * Implements hook_preprocess_theme().
  */
 function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   module_load_include('inc', 'agile_coursepack', 'includes/coursepack_datastream');
   $object = $variables['islandora_object'];
   $cp = $object['CPDATA']->content;
@@ -32,8 +33,12 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
     $variables['links'] = theme_item_list($list_variables);
   }
   $block = module_invoke('agile_coursepack', 'block_view', 'coursepack_solr');
-  $variables['search_block'] = render($block['content']);
-  if (user_access('edit coursepacks')) {
+  $variables['search_block'] = NULL;
+  $variables['solr_link'] = NULL;
+  $variables['metadata_link'] = NULL;
+  $variables['manage_link'] = NULL;
+  if (agile_coursepack_can_edit($object)) {
+    $variables['search_block'] = render($block['content']);
     $variables['solr_link'] = l(t("Add items to coursepack"), "agile_coursepack/solr_redirect/{$object->id}");
     $variables['metadata_link'] = l(t("Edit metadata"), "agile_coursepack/add_coursepack/{$object->id}");
     $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
@@ -50,5 +55,3 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
     $variables['contact'] = l('Contact Administrator if any content in this coursepack violates copyright.', "mailto:$contact_email", array('absolute' => TRUE));
   }
 }
-
-

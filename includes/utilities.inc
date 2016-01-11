@@ -135,7 +135,11 @@ function agile_populate_coursepack($pid) {
   return $content;
 }
 
-function agile_coursepack_solr_redirect($coursepack_pid) {
+function agile_coursepack_solr_redirect($coursepack_pid = NULL) {
+  if(!$coursepack_pid) {
+    $parts = explode('/', $_GET['q']);
+    $coursepack_pid = array_pop($parts);
+  }
   if (!isset($_GET['hidden_filter'])) {
     $_GET['hidden_filter'] = array('');
   }
@@ -158,4 +162,9 @@ function agile_coursepack_solr_redirect($coursepack_pid) {
   $options['query']['pid'] = $coursepack_pid;
   $options['query']['hidden_filter'][0] = 'RELS_EXT_hasModel_uri_ms:("' . $content_models_string . '")';
   drupal_goto('islandora/search/' . $search_string, $options);
+}
+
+function agile_coursepack_can_edit($object) {
+  global $user;
+  return (user_access('edit own coursepack') && $object->owner == $user->name || user_access('edit any coursepack'));
 }

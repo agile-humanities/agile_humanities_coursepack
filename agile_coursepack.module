@@ -84,12 +84,13 @@ function agile_coursepack_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
-  $items['agile_coursepack/solr_redirect'] = array(
+  $items['agile_coursepack/solr_redirect/%islandora_object'] = array(
     'title' => 'Redirect search',
     'description' => 'Redirect Solr search',
     'page callback' => 'agile_coursepack_solr_redirect',
     'file' => 'includes/utilities.inc',
-    'access arguments' => array('edit coursepacks'),
+    'access callback' => 'coursepack_edit_access',
+    'access arguments' => array(2),
     'type' => MENU_CALLBACK,
   );
 
@@ -118,9 +119,13 @@ function agile_coursepack_permission() {
       'title' => t('Create New Coursepacks'),
       'description' => t('Allows users to create anthologies'),
     ),
-    'edit coursepacks' => array(
-      'title' => t('Edit New Coursepacks'),
-      'description' => t('Allows users to edit anthologies'),
+    'edit any coursepack' => array(
+      'title' => t('Edit Any Coursepacks'),
+      'description' => t('Allows users to edit all anthologies on the site.'),
+    ),
+    'edit own coursepack' => array(
+      'title' => t('Edit Coursepacks created by user.'),
+      'description' => t('Allows users to edit anthologies personally created'),
     ),
     'add source content' => array(
       'title' => t('Add new content'),
@@ -387,4 +392,9 @@ function agile_coursepack_process_islandora_document(&$variables) {
   if (isset($variables['islandora_thumbnail_img']) && isset($variables['islandora_full_url'])) {
     $variables['islandora_content'] = $edit . l($variables['islandora_thumbnail_img'], $variables['islandora_full_url'], array('html' => TRUE));
   }
+}
+
+function coursepack_edit_access($object) {
+  module_load_include('inc', 'agile_coursepack', 'includes/utilities');
+  return agile_coursepack_can_edit($object);
 }
