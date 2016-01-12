@@ -63,16 +63,18 @@ function coursepack_get_extensions() {
  * @param string $pid
  *   Coursepack PID
  */
-function agile_coursepack_download($pid) {
-  $pack = islandora_object_load($pid);
-  $children = islandora_compound_object_get_parts($pid, TRUE);
+function agile_coursepack_download($coursepack_pid) {
+  $pack = islandora_object_load($coursepack_pid);
+  $children = islandora_compound_object_get_parts($coursepack_pid, TRUE);
   $pids = array_keys($children);
+  array_unshift($pids, $coursepack_pid);
   $zip = new ZipArchive();
   $tmp_file = drupal_realpath(tempnam('temporary://', "agile_coursepack_"));
   $zip->open($tmp_file, ZipArchive::CREATE);
   $counter = 1;
   foreach ($pids as $pid) {
     $object = islandora_object_load($pid);
+    $label = $pid == $coursepack_pid ? $object->label . t(' Course Description') : $object->label;
     $stream = $object['PDF'] ? 'PDF' : 'OBJ';
     $extension = 'pdf';
     if ($stream == 'OBJ') {
@@ -81,7 +83,7 @@ function agile_coursepack_download($pid) {
       $extension = $mime_detect->getExtension($mime_type);
     }
     $clean_name = str_pad($counter, 2, "00", STR_PAD_LEFT);
-    $clean_name .= "-" . str_replace(' ', '_', $object->label) . ".$extension";
+    $clean_name .= "-" . str_replace(' ', '_', $label) . ".$extension";
     $filename = drupal_realpath(file_create_filename("$clean_name", 'temporary://'));
     $contents = $object[$stream]->content;
     file_put_contents($filename, $contents, FILE_APPEND | LOCK_EX);
@@ -136,7 +138,7 @@ function agile_populate_coursepack($pid) {
 }
 
 function agile_coursepack_solr_redirect($coursepack_pid = NULL) {
-  if(!$coursepack_pid) {
+  if (!$coursepack_pid) {
     $parts = explode('/', $_GET['q']);
     $coursepack_pid = array_pop($parts);
   }

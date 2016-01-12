@@ -19,6 +19,7 @@
 function agile_coursepack_add_coursepack_form(array $form, array &$form_state, $pid = NULL) {
   module_load_include('inc', 'agile_coursepack', 'includes/coursepack_datastream');
   $new = TRUE;
+  $needs_description = TRUE;
   if ($pid) {
     $coursepack = islandora_object_load($pid);
     $cp = new CPData($coursepack['CPDATA']->content);
@@ -28,6 +29,9 @@ function agile_coursepack_add_coursepack_form(array $form, array &$form_state, $
       '#type' => 'hidden',
       '#value' => $pid,
     );
+    if ($coursepack['OBJ']) {
+      $needs_description = FALSE;
+    }
   }
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   $module_path = drupal_get_path('module', 'agile_coursepack');
@@ -88,39 +92,39 @@ function agile_coursepack_add_coursepack_form(array $form, array &$form_state, $
     '#title' => t('Institution'),
     '#default_value' => ($new) ? '' : $cp_values['cp:institution'],
   );
-  if ($new) {
-    $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
-    $audio_extensions = 'wav mp3';
-    $video_extensions = 'ogg mp4 mov qt m4v avi mkv';
-    module_load_include('inc', 'islandora_jodconverter', 'includes/utilities');
-    $pdf = islandora_jodconverter_get_format('pdf');
-    $pdf['from'][] = 'pdf';
-    $pdf_extensions = implode(' ', $pdf['from']);
-    $extensions = coursepack_get_extensions();
-    $allowed = '';
-    foreach ($extensions as $key => $extension) {
-      $allowed .= ' ' . implode(' ', $extension);
-    }
 
-    $form['source_file'] = array(
-      '#title' => t('Course description'),
-      '#type' => 'managed_file',
-      '#required' => FALSE,
-      '#description' => t('Select file to upload.<br/>Files must be less than <b>@size MB.</b><br/>Allowed file types: <b>@ext.</b>', array('@size' => $upload_size, '@ext' => $allowed)),
-      '#default_value' => isset($form_state['values']['files']) ? $form_state['values']['files'] : NULL,
-      '#upload_location' => 'temporary://',
-      '#upload_validators' => array(
-        'file_validate_extensions' => array($allowed),
-        // Assume it's specified in MB.
-        'file_validate_size' => array($upload_size * 1024 * 1024),
-      ),
-    );
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t("Create coursepack"),
-    );
+  $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
+  $audio_extensions = 'wav mp3';
+  $video_extensions = 'ogg mp4 mov qt m4v avi mkv';
+  module_load_include('inc', 'islandora_jodconverter', 'includes/utilities');
+  $pdf = islandora_jodconverter_get_format('pdf');
+  $pdf['from'][] = 'pdf';
+  $pdf_extensions = implode(' ', $pdf['from']);
+  $extensions = coursepack_get_extensions();
+  $allowed = '';
+  foreach ($extensions as $key => $extension) {
+    $allowed .= ' ' . implode(' ', $extension);
   }
-  $label = $new ? t("Create coursepack") : t("Update metadata");
+  $title = $needs_description ? t('Add course description') : t('Update course description');
+  $form['source_file'] = array(
+    '#title' => $title,
+    '#type' => 'managed_file',
+    '#required' => FALSE,
+    '#description' => t('Select file to upload.<br/>Files must be less than <b>@size MB.</b><br/>Allowed file types: <b>@ext.</b>', array('@size' => $upload_size, '@ext' => $allowed)),
+    '#default_value' => isset($form_state['values']['files']) ? $form_state['values']['files'] : NULL,
+    '#upload_location' => 'temporary://',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array($allowed),
+      // Assume it's specified in MB.
+      'file_validate_size' => array($upload_size * 1024 * 1024),
+    ),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t("Create coursepack"),
+  );
+
+  $label = $new ? t("Create coursepack") : t("Update course details");
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => $label,
@@ -166,8 +170,30 @@ function agile_coursepack_add_coursepack_form_submit(array $form, array &$form_s
   }
   else {
     $object = islandora_object_load($form_state['values']['pid']);
+    $soource_file = NULL;
+    $new_obj = $object['OBJ'] ? FALSE : TRUE;
     $cp_data = agile_coursepack_make_cpdata($form_state['values']);
     $object['CPDATA']->content = $cp_data;
+    if ($form_state['values']['source_file']) {
+      $source_file = file_load($form_state['values']['source_file']);
+    }
+    if ($source_file) {
+      if ($new_obj) {
+        $ds = $object->constructDatastream('OBJ', 'M');
+        $ds->setContentFromFile(drupal_realpath($source_file->uri), FALSE);
+        $ds->label = 'OBJ';
+        $ds->mimetype = $source_file->filemime;
+        $object->ingestDatastream($ds);
+      }
+      else {
+        $object['OBJ']->setContentFromFile(drupal_realpath($source_file->uri), FALSE);
+        if ($object['OBJ']->mimetype != $source_file->filemime) {
+          $object['OBJ']->mimetype = $source_file->filemime;
+        }
+      }
+    }
+
+
     $form_state['redirect'] = "islandora/object/$object->id";
   }
 }
@@ -185,4 +211,19 @@ function agile_coursepack_make_cpdata($values) {
   $cp->addElement('cp:department', $values['dept']);
   $cp->addElement('cp:institution', $values['institution']);
   return $cp->asXML();
+}
+
+function agile_upsert_description($object, $source_file) {
+  $existing = $object['OBJ'];
+  $ds = $existing ? $object->constructDatastream('OBJ', 'M') : $object['OBJ'];
+  $ds->setContentFromFile(drupal_realpath($source_file->uri), FALSE);
+  if (!$ds->label) {
+    $ds->label = 'OBJ';
+  }
+  if (!$ds->mimetype || $ds->mimetype == $source_file->filemime) {
+    $ds->mimetype = $source_file->filemime;
+  }
+  if (!$existing) {
+    $object->ingestDatastream($ds);
+  }
 }

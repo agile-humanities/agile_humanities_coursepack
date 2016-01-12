@@ -40,7 +40,7 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
   if (agile_coursepack_can_edit($object)) {
     $variables['search_block'] = render($block['content']);
     $variables['solr_link'] = l(t("Add items to coursepack"), "agile_coursepack/solr_redirect/{$object->id}");
-    $variables['metadata_link'] = l(t("Edit metadata"), "agile_coursepack/add_coursepack/{$object->id}");
+    $variables['metadata_link'] = l(t("Edit course details and description"), "agile_coursepack/add_coursepack/{$object->id}");
     $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
   }
 

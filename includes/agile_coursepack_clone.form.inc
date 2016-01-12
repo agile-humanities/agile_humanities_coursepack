@@ -45,6 +45,8 @@ function agile_coursepack_clone_form_submit($form, $form_state) {
   foreach ($child_keys as $child) {
     $children[] = islandora_object_load($child);
   }
-  islandora_compound_object_add_parent($children, $object->id);
-  drupal_goto("islandora/object/{$object->id}");
+  if ($children) {
+    islandora_compound_object_add_parent($children, $object->id);
+  }
+  drupal_goto("agile_coursepack/add_coursepack/{$object->id}");
 }
