@@ -41,7 +41,9 @@ function agile_coursepack_preprocess_agile_coursepack(array &$variables) {
     $variables['search_block'] = render($block['content']);
     $variables['solr_link'] = l(t("Add items to coursepack"), "agile_coursepack/solr_redirect/{$object->id}");
     $variables['metadata_link'] = l(t("Edit course details and description"), "agile_coursepack/add_coursepack/{$object->id}");
-    $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
+    if ($links) {
+      $variables['manage_link'] = l(t("Rearrange or delete items"), "islandora/object/{$object->id}/manage/compound");
+    }
   }
 
   $variables['consolidate_link'] = l(t("Download coursepack material"), "agile_coursepack/consolidate/{$object->id}");
