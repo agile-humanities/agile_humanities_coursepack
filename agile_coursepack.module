@@ -131,6 +131,10 @@ function agile_coursepack_permission() {
       'title' => t('Add new content'),
       'description' => t('Allows users to upload content'),
     ),
+    'can see manage tab' => array(
+      'title' => t('Can See Manage Tab'),
+      'description' => t('Allows qualified users to see Manage Tab'),
+    ),
   );
 }
 
@@ -394,7 +398,33 @@ function agile_coursepack_process_islandora_document(&$variables) {
   }
 }
 
+/**
+ * Access callback
+ *
+ * @param Abstract object $object
+ *   Object viewed
+ *
+ * @return bool
+ *   Editability
+ */
 function coursepack_edit_access($object) {
   module_load_include('inc', 'agile_coursepack', 'includes/utilities');
   return agile_coursepack_can_edit($object);
+}
+
+
+/**
+ * Implements hook_preprocess_theme().
+ */
+function agile_coursepack_preprocess_page(&$vars) {
+  if (user_access('can see manage tab')) {
+    return;
+  }
+  if (is_array($vars['tabs']['#primary'])) {
+    foreach ($vars['tabs']['#primary'] as $key => $primary_tab) {
+      if ($primary_tab['#link']['title'] == 'Manage') {
+        unset($vars['tabs']['#primary'][$key]);
+      }
+    }
+  }
 }
