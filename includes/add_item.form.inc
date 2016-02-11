@@ -55,10 +55,20 @@ function agile_coursepack_add_item_form(array $form, array &$form_state, $pid = 
     '#required' => TRUE,
   );
   $form['dateIssued'] = array(
-    '#type' => 'date_popup',
-    '#title' => t('First publication'),
-    '#date_format' => 'Y/m/d',
+    '#type' => 'textfield',
+    '#title' => t('Year of first publication'),
+    '#size' => 5,
     '#default_value' => isset($results['date']) ? $results['date'][0] : '',
+  );
+  $form['host'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Extracted from'),
+    '#default_value' => isset($results['host']) ? $results['host'][0] : '',
+  );
+  $form['source'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Source of original'),
+    '#default_value' => isset($results['source']) ? $results['source'][0] : '',
   );
   $form['country'] = array(
     '#type' => 'textfield',
@@ -88,6 +98,11 @@ function agile_coursepack_add_item_form(array $form, array &$form_state, $pid = 
     '#title' => t('Manifestation'),
     '#description' => t('(periodical, book, broadside, etc.)'),
     '#default_value' => isset($results['manifestation']) ? $results['manifestation'][0] : '',
+  );
+  $form['note'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Notes'),
+    '#default_value' => isset($results['notes']) ? $results['notes'][0] : '',
   );
   if (!$pid) {
     $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
@@ -220,6 +235,9 @@ function coursepack_build_mods($inputs) {
   add_language($xml, $inputs['language']);
   add_manifestation($xml, $inputs['manifestation']);
   add_genre($xml, $inputs['genre']);
+  add_host($xml, $inputs['host']);
+  add_source($xml, $inputs['source']);
+  add_notes($xml, $inputs['note']);
   return $xml->saveXML();
 }
 
@@ -344,6 +362,50 @@ function add_genre($xml, $genre) {
   $root->appendChild($genre_node);
 }
 
+function add_host($xml, $host) {
+  $mods_uri = "http://www.loc.gov/mods/v3";
+  $root = $xml->documentElement;
+  $relateditem_node = $xml->createElementNS($mods_uri, 'mods:relatedItem');
+  $relateditem_node->setAttribute('type', 'host');
+  $titleInfo_node = $xml->createElementNS($mods_uri, "mods:titleInfo");
+  $relateditem_node->appendChild($titleInfo_node);
+  $title_node = $xml->createElementNS($mods_uri, 'mods:title', $host);
+  $titleInfo_node->appendChild($title_node);
+  $root->appendChild($relateditem_node);
+}
+
+/**
+ * Adds source to document.
+ *
+ * @param DomDocument $xml
+ *   DomDocument to which values are added
+ * @param string $source
+ *   Source to be added
+ */
+function add_source($xml, $source) {
+  $mods_uri = "http://www.loc.gov/mods/v3";
+  $root = $xml->documentElement;
+  $note_node = $xml->createElementNS($mods_uri, 'mods:note', $source);
+  $note_node->setAttribute('type', 'source identifier');
+  $root->appendChild($note_node);
+}
+
+/**
+ * Adds source to document.
+ *
+ * @param DomDocument $xml
+ *   DomDocument to which values are added
+ * @param string $source
+ *   Source to be added
+ */
+function add_notes($xml, $note) {
+  $mods_uri = "http://www.loc.gov/mods/v3";
+  $root = $xml->documentElement;
+  $note_node = $xml->createElementNS($mods_uri, 'mods:note', $note);
+  $note_node->setAttribute('type', 'content');
+  $root->appendChild($note_node);
+}
+
 /**
  * Retrieves fields to display in the Edit mode.
  *
@@ -365,8 +427,11 @@ function agile_coursepack_info_fields(AbstractObject $object) {
     'publisher' => '//mods:publisher',
     'genre' => '//mods:genre',
     'country' => '//mods:placeTerm',
-    'manifestation' => '// mods:note[@type="manifestation"] ',
+    'manifestation' => '// mods:note[@type="manifestation"]',
+    'source' => '// mods:note[@type="source identifier"]',
+    'notes' => '// mods:note[@type="content"]',
     'language' => '//mods:languageTerm',
+    'host' => '//mods:relatedItem/mods:titleInfo/mods:title',
   );
   $content = $object['MODS']->content;
   $xml = simplexml_load_string($object['MODS']->content);
