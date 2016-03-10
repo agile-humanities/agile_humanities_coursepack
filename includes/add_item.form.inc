@@ -156,6 +156,11 @@ function agile_coursepack_add_item_form_submit(array $form, array &$form_state) 
     $object['MODS']->content = coursepack_build_mods($form_state['values']);
     if ($object->label != $form_state['values']['title']) {
       $object->label = $form_state['values']['title'];
+      $dc = DublinCore::importFromXMLString($object['DC']->content);
+      if ($dc) {
+        $dc->setElement('dc:title', $form_state['values']['title']);
+        $object['DC']->content = $dc->asXML();
+      }
     }
     drupal_set_message(t("Metadata updated"));
     $form_state['redirect'] = "islandora/object/$pid";
